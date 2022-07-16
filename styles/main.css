@@ -14,31 +14,101 @@ main {
   align-items: center;
 }
 
+/* Intro & Instructions CSS */
+
 #intro-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  margin: 10px;
+}
+
+.play-button {
+  background-color: red;
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
 
 }
+
+/* Game Wrapper (Lives & Score + Grid) CSS */
+
+#game-wrapper {
+  margin: 10px;
+}
+
+/*  Lives & Score CSS */
 
 #progress-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 }
+
+#progress-container p {
+  font-size: 22px;
+}
+
+
+/* Grid / Maze CSS */
 
 .grid {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  height: 600px;
-  width: 500px;
+  width: 560px;
 }
 
 .grid div{
-  border: 1px solid grey;
+  background: #46270B;
+  border-radius: 5%;
   height: 20px;
   width: 20px;
+}
 
+div.tunnelSides {
+  background: transparent;
+  border: none;
+}
+
+div.maze, div.monsterHome {
+  background: #D1C8A6;
+}
+
+/* Dots CSS */
+
+div.dots {
+  background-image: url(../assets/Greek_Gold_Coin-removebg-preview.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Energiser CSS */
+
+div.energiser {
+  background-image: url(../assets/ariadne.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Hero CSS */
+
+div.hero {
+  background-image: url(../assets/theseus.jpeg) ;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Monster CSS */
+
+div.monster{
+  background-image: url(../assets/minotaur-removebg-preview.png) ;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
