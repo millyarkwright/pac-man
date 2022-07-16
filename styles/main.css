@@ -63,19 +63,19 @@ main {
 }
 
 .grid div{
-  background: #46270B;
+  background: #D1C8A6;
   border-radius: 5%;
   height: 20px;
   width: 20px;
 }
 
+div.maze {
+  background: #46270B;
+}
+
 div.tunnelSides {
   background: transparent;
   border: none;
-}
-
-div.maze, div.monsterHome {
-  background: #D1C8A6;
 }
 
 /* Dots CSS */
