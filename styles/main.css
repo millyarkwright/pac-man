@@ -106,9 +106,19 @@ div.hero {
 }
 /* Monster CSS */
 
-div.monster{
+div.monster {
   background-image: url(../assets/minotaur-removebg-preview.png) ;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.frightened {
+  animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }

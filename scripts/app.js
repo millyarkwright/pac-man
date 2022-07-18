@@ -3,6 +3,10 @@ function init() {
   // ! Elements
 
   const grid = document.querySelector('.grid')
+  const scoreText = document.querySelector('.scoreText')
+  const livesText = document.querySelector('.livesText')
+  const dotsText = document.querySelector('.dotsText')
+
 
   // ! Variables
 
@@ -24,27 +28,49 @@ function init() {
   const energiser = [85, 110, 645, 670]
 
   // (Starting) position for Hero
-  let heroStartingPosition = 657
+  const heroStartingPosition = 657
   let heroCurrentPosition = heroStartingPosition
 
   // Class & Objects for Monsters 
 
   class Monster {
-    constructor(name, startPosition, speed) {
+    constructor(name, startPosition, speed, nature, targetCell) {
       this.name = name
       this.startPosition = startPosition
       this.speed = speed
+      this.nature = nature
+      this.targetCell = targetCell
+      // would like to make the tagetCell randomly generated for each monster (would need to be in each corner though - stretch goal perhaps)
       this.currentPosition = startPosition
-      this.isVulnerable = false
+      this.frightenedMode = false
+      this.scatterMode = true
+      this.chaseMode = false
     }
   }
 
+  // Monster status & nature
   monsters = [
-    new Monster('Monster1', 432, 200),
-    new Monster('Monster2', 433, 300),
-    new Monster('Monster3', 434, 400),
-    new Monster('Monster4', 435, 500)
+    new Monster('Monster1', 432, 200, 'chaser', 90),
+    new Monster('Monster2', 433, 300, 'ambush', 246),
+    new Monster('Monster3', 434, 400, 'all', 734),
+    new Monster('Monster4', 435, 500, 'random', 661)
   ]
+
+  // Monster1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
+  // Monster 2 = follow hero's direction but not hero itself (then tries to go round the walls to take hero out). Sometimes will turn away if comes face to face to hero - in "scatter" mode
+  // Monster 3 = does a mix of the three others... 
+  // Monster 4 = when leaving the home, head to hero, but once clse, turn direections to head back to "scatter" phase 
+
+  // Score - Dots - Lives
+  
+  let score = 0
+  let lives = 3
+  let dots = 295
+  dotsText.innerHTML = dots
+
+  const dotValue = 10
+  const energiserValue = 20
+  const frightenedMonsterValue = 200
 
   // ? Create Grid
 
@@ -117,7 +143,7 @@ function init() {
     cells[position].classList.add('hero')
   }
 
-  // Function for moving the hero around the board 
+  // Function for moving the hero around the board: 
 
   function heroMove(event) {
   // Save keys for each direction
@@ -127,59 +153,101 @@ function init() {
     const right = 39
     const down = 40
 
-  // First remove hero from current position
+    // First remove hero from current position
     removeHero(heroCurrentPosition)
 
+    // If statement (check whether the index we want to the hero to move isn't a wall, energy home and doesn't leave the grid/jumps down a line):
     if (left === keyCode && !cells[heroCurrentPosition - 1].classList.contains('monsterHome') && !cells[heroCurrentPosition - 1].classList.contains('maze') && heroCurrentPosition % width !== 0) {
-      console.log('clicked left')
       heroCurrentPosition -= 1
+    } else if (left === keyCode && cells[heroCurrentPosition - 1] === cells[391]) {
+      heroCurrentPosition = 419
     } else if (up === keyCode && !cells[heroCurrentPosition - width].classList.contains('monsterHome') && !cells[heroCurrentPosition - width].classList.contains('maze') && heroCurrentPosition >= width) {
-      console.log('clicked up')
       heroCurrentPosition -= width
-    } else if (right === keyCode && !cells[heroCurrentPosition + 1].classList.contains('monsterHome') && !cells[heroCurrentPosition + 1].classList.contains('maze') && heroCurrentPosition % width - 1) {
-      console.log('clicked right')
+    } else if (right === keyCode && !cells[heroCurrentPosition + 1].classList.contains('monsterHome') && !cells[heroCurrentPosition + 1].classList.contains('maze') && heroCurrentPosition % width !== width - 1) {
       heroCurrentPosition += 1
+    } else if (right === keyCode && cells[heroCurrentPosition + 1] === cells[420]) {
+      heroCurrentPosition = 392
     } else if (down === keyCode && !cells[heroCurrentPosition + width].classList.contains('monsterHome') && !cells[heroCurrentPosition + width].classList.contains('maze') && heroCurrentPosition + width <= cellCount - 1) {
-      console.log('clicked down')
       heroCurrentPosition += width
     }
+
+    // Call functions: if dot is collected or if power peller is eaten
+    // Add the hero to the new position
+    collectDots(heroCurrentPosition) 
+    collectEnergiser(heroCurrentPosition)
     addHero(heroCurrentPosition)
   }
    
-  // Will need to be an if statement - or switch?? - and check whether the index we want the hero to move into isn't a wall, the enemy home or doesn't leave the board completely. Each keycode pressed will need it's own statement 
+  // Function for collecting dots 
+  function collectDots(position) {
+    if (cells[position].classList.contains('dots')) {
+      scoreText.innerHTML = score += dotValue
+      dotsText.innerHTML = dots -= 1
+      cells[position].classList.remove('dots')
+    }
+  }
 
-// Then, if the new position (now current position) contains an enemy, a flashing monster, a dot, or an energiser there will be certain actions (can these be their own functions?)
-  
-  // if dot (true) - call function: remove dot class, add 10 to score, update score display, reduce number of dots to go by 1, update remianing dots display
-  
-  // if energiser (true) - call function: remove energiser, add 50 to score, update score display, make monsters flash, freeze enemies/move in opposite direction.
+  // Function for collecting energisers
+  function collectEnergiser(position) {
+    if (cells[position].classList.contains('energiser')) {
+      // Add Score
+      scoreText.innerHTML = score += energiserValue
+      // Make Ghosts frightened - add class of 'frightened', change variable of frightenedMode to True
+      monsters.forEach(monster => monster.frightenedMode = true)
+      // Add timeout for frightenmode? OR just a function for frightened mode that last a certain amount of time before defaulting to chase mode. 
+
+      // Remove the energiser from cell
+      cells[position].classList.remove('energiser')
+    }
+  }
+
+  // ! Execution: Monster Movement 
+
+  // Firstly, what are the directions that a Monster can move: (left: -1, right: +1, down: width, up: -width) - same as Hero. Make this into an array and then do Math.floor Math.random * array length to get the random direction.
+
+  // ? One overarching function for monsterMove: 
+  // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
+
+  // All functions below will use these directions so make global variables?
+
+  function monsterMovement() {
+    if (monster.frightened)
+  }
+
+  // ? Function for MonsterMovement in Frightened Mode - 
+  // All monsters will do the same things (random movement) so 1 function
+
+function frightenedMovement () {
+  // Random Movemnet 
+
+  }
+}
+
+
+  // ? Function for MonsterMovement in Scattered Mode - 
+  // All monsters head back to their target square - 1 function (think each monster is supposed to get to their target cell in their own individual way but for now my just try get them there)
+
+
+
+  // ? Function for MonsterMovement in Chase Mode - 
+  // All monsters behave as per their "nature":
+
+
+
   
   // if monster (true) - call function: lose a life, update life display. 
  
-  // if vulnerable monster (true) - call function: add x to score, update score display, reset enemy position. if first vulnerable enemy = 200 points. if second 400 points, doubles every time. 
+  // if frightened monster (true) - call function: add x to score, update score display, reset enemy position. if first frightened enemy = 200 points. if second 400 points, doubles every time. 
 
 
-
-  // ? Monster Movement 
-
-  // Function for randomMovement... 
-  // Firstly, what are the directions that a Monster can move: (left: -1, right: +1, down: width, up: -width) - same as Hero. Make this into an array and then do Math.floor Math.random * array length to get the random direction.
-
-  // Then we need to check the cell the monster is about to look into - currentposition + direction? - if that cell doesn't contain a wall, enemy home and doesn't leave the board completely, reassign current positions. If that new current position contains the hero, if the ghost isn't vulnerable (vulnerable monster = fale) then call monster function above, if vulnerable (vulnerablemonster = true) then call vulnerable monster function above? 
-
-
-
-
-  // ? Stop Monster Flashing 
-
-  // Default -> let isVulnerable 
+  // Then we need to check the cell the monster is about to look into - currentposition + direction? - if that cell doesn't contain a wall, enemy home and doesn't leave the board completely, reassign current positions. If that new current position contains the hero, if the ghost isn't frightened (frightenedMode = fale) then call monster function above, if frightened (frightenedMode = true) then call fightened monster function above? 
 
 
 
 
 
 
-// ! Events
+  // ! Events
 
   // Add event listener for user pressing arrow keys to move hero
   document.addEventListener('keydown', heroMove)
