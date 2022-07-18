@@ -49,7 +49,7 @@ function init() {
   }
 
   // Monster status & nature
-  monsters = [
+  const monsters = [
     new Monster('Monster1', 432, 200, 'chaser', 90),
     new Monster('Monster2', 433, 300, 'ambush', 246),
     new Monster('Monster3', 434, 400, 'all', 734),
@@ -194,8 +194,12 @@ function init() {
       scoreText.innerHTML = score += energiserValue
       // Make Ghosts frightened - add class of 'frightened', change variable of frightenedMode to True
       monsters.forEach(monster => monster.frightenedMode = true)
+      monsters.forEach(monster => cells[monster.currentPosition].classList.add('frightened'))
       // Add timeout for frightenmode? OR just a function for frightened mode that last a certain amount of time before defaulting to chase mode. 
-
+      setTimeout(() => {
+        monsters.forEach(monster => monster.frightenedMode = false)
+        monsters.forEach(monster => cells[monster.currentPosition].classList.remove('frightened'))
+      }, 10 * 1000)
       // Remove the energiser from cell
       cells[position].classList.remove('energiser')
     }
@@ -203,25 +207,49 @@ function init() {
 
   // ! Execution: Monster Movement 
 
-  // Firstly, what are the directions that a Monster can move: (left: -1, right: +1, down: width, up: -width) - same as Hero. Make this into an array and then do Math.floor Math.random * array length to get the random direction.
+  // Directions Array for the monster movements: 
+
+  const monsterNextMove = [-1, +1, -width, + width]
+
+  // Choose random direction: 
+
+  let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+
+  monsters.forEach(monster => monsterMoveFrightened(monster))
+
+  function monsterMoveFrightened(monster){
+    // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+    setInterval(function() {
+    // If next random move the monster wants to make is to a cell that doesn't contain maze 
+      if (!cells[monster.currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster.currentPosition + monsterRandomMove].classList.contains('monster')) {
+      // Remove ghost classes
+        cells[monster.currentPosition].classList.remove(monster.name, 'monster', 'frightened')
+        // Move into new cell
+        monster.currentPosition += monsterRandomMove
+        cells[monster.currentPosition].classList.add(monster.name, 'monster', 'frightened')
+      } else {
+        monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+      }
+    }, monster.speed)
+  }
 
   // ? One overarching function for monsterMove: 
   // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
 
   // All functions below will use these directions so make global variables?
 
-  function monsterMovement() {
-    if (monster.frightened)
-  }
+//   function monsterMovement() {
+//     if (monster.frightened)
+//   }
 
-  // ? Function for MonsterMovement in Frightened Mode - 
-  // All monsters will do the same things (random movement) so 1 function
+//   // ? Function for MonsterMovement in Frightened Mode - 
+//   // All monsters will do the same things (random movement) so 1 function
 
-function frightenedMovement () {
-  // Random Movemnet 
+// function frightenedMovement () {
+//   // Random Movemnet 
 
-  }
-}
+//   }
+// }
 
 
   // ? Function for MonsterMovement in Scattered Mode - 

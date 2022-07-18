@@ -114,11 +114,12 @@ div.monster {
 }
 
 .frightened {
+  background: #D1C8A6;
   animation: blink 0.5s infinite;
 }
 
 @keyframes blink {
   50% {
-    opacity: 0;
+    opacity: 50%;
   }
 }
