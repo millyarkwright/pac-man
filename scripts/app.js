@@ -50,11 +50,15 @@ function init() {
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 432, 200, 'chaser', 90),
-    new Monster('Monster2', 433, 300, 'ambush', 246),
-    new Monster('Monster3', 434, 400, 'all', 734),
-    new Monster('Monster4', 435, 500, 'random', 661)
+    new Monster('Monster1', 434, 200, 'chaser', 90),
+    new Monster('Monster2', 432, 250, 'ambush', 246),
+    new Monster('Monster3', 433, 300, 'all', 734),
+    new Monster('Monster4', 435, 350, 'random', 661)
   ]
+
+  console.log(monsters)
+  console.log(monsters[1])
+  console.log(monsters[3].nature)
 
   // Monster1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
   // Monster 2 = follow hero's direction but not hero itself (then tries to go round the walls to take hero out). Sometimes will turn away if comes face to face to hero - in "scatter" mode
@@ -119,16 +123,6 @@ function init() {
   monsters.forEach(monster => {
     cells[monster.currentPosition].classList.add(monster.name, 'monster')
   })
-
-  // let monster1Position = 432
-  // let monster2Position = 433
-  // let monster3Position = 434
-  // let monster4Position = 435
-
-  // cells[monster1Position].classList.add('monster1', 'monster')
-  // cells[monster2Position].classList.add('monster2', 'monster')
-  // cells[monster3Position].classList.add('monster3', 'monster')
-  // cells[monster4Position].classList.add('monster4', 'monster')
 
   // ! Executions
     
@@ -195,6 +189,7 @@ function init() {
       // Make Ghosts frightened - add class of 'frightened', change variable of frightenedMode to True
       monsters.forEach(monster => monster.frightenedMode = true)
       monsters.forEach(monster => cells[monster.currentPosition].classList.add('frightened'))
+      monsters.forEach(monster => monsterMoveFrightened(monster))
       // Add timeout for frightenmode? OR just a function for frightened mode that last a certain amount of time before defaulting to chase mode. 
       setTimeout(() => {
         monsters.forEach(monster => monster.frightenedMode = false)
@@ -215,7 +210,33 @@ function init() {
 
   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
 
-  monsters.forEach(monster => monsterMoveFrightened(monster))
+
+  // // ? GET MONSTERS OUT OF HOME 
+
+  function monsterLeaveHome() {
+    
+    // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
+    // 
+    // Want to stagger each monster leaving - would i be able to use a forEach monster loop for hte below interval and still stagger each one?
+    const monster1Leaves = setInterval(() => {
+      cells[monster[0].currentPosition].classList.remove(monster[0].name, 'monster')
+      monster[0].currentPosition -= width
+      cells[monster[0].currentPosition].classList.add(monster[0].name, 'monster')
+    }, 200)
+    
+    setTimeout(() => {
+      clearInterval(monster1Leaves)
+    }, 800)
+
+    const monster2Leaves = setInterval(() => {
+      cells[monster[1]].classList.remove(monster[1].name, 'monster')
+      monster[1].currentPosition -= width
+      cells[monster[1]].classList.add(monster[1].name, 'monster')
+    }, 200)
+
+    // For Monsters 3 & 4, need to move them one cell right and left (respectively) and then start the same interval above. m
+  }
+
 
   function monsterMoveFrightened(monster){
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
@@ -232,6 +253,25 @@ function init() {
       }
     }, monster.speed)
   }
+
+// whilst (!monster.frightenedMode) {
+//   forEach monster {
+//     if (monster has hit a barrier) {
+//       if (hero is to the left) turn left 
+//       if (hero is tot he right) turn right
+//       if (hero is to the top) turn upwards
+//       if (hero is to the bottom) turn downwards
+//     } else {
+//       go straight
+//       if (monster hits hero) {
+//         hero = dead
+//       }
+//     }
+
+//   }
+// }
+
+
 
   // ? One overarching function for monsterMove: 
   // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
