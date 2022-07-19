@@ -225,9 +225,8 @@ function init() {
 
   function monsterLeaveHome() {
     
-  //   // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
-  //   // 
-  //   // Want to stagger each monster leaving -
+    // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
+    // Want to stagger each monster leaving - Monster2 will have to wait 8 secs before moving, MOnster 3 16 secs and Monster 4 24 secs
     const monster1Leaves = setInterval(() => {
       cells[monsters[0].currentPosition].classList.remove(monsters[0].name, 'monster')
       monsters[0].currentPosition -= width
@@ -238,44 +237,48 @@ function init() {
       clearInterval(monster1Leaves)
     }, 800)
 
-    const monster2Leaves = setInterval(() => {
-      cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
-      monsters[1].currentPosition -= width
-      cells[monsters[1].currentPosition].classList.add(monsters[1].name, 'monster')
-    }, 200)
-
     setTimeout(() => {
-      clearInterval(monster2Leaves)
+      const monster2Leaves = setInterval(() => {
+        cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
+        monsters[1].currentPosition -= width
+        cells[monsters[1].currentPosition].classList.add(monsters[1].name, 'monster')
+      }, 200)
+      setTimeout(() => {
+        clearInterval(monster2Leaves)
+      }, 800)
     }, 800)
 
-    cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-    monsters[2].currentPosition += 1
-    cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-
-    const monster3Leaves = setInterval(() => {
+    setTimeout(() => { 
       cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-      monsters[2].currentPosition -= width
+      monsters[2].currentPosition += 1
       cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-    }, 200)
+
+      const monster3Leaves = setInterval(() => {
+        cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+        monsters[2].currentPosition -= width
+        cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+      }, 200)
+
+      setTimeout(() => {
+        clearInterval(monster3Leaves)
+      }, 800)
+    }, 1600)
 
     setTimeout(() => {
-      clearInterval(monster3Leaves)
-    }, 800)
-
-    cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-    monsters[3].currentPosition -= 1
-    cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-
-    const monster4Leaves = setInterval(() => {
       cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-      monsters[3].currentPosition -= width
+      monsters[3].currentPosition -= 1
       cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-    }, 200)
 
-    setTimeout(() => {
-      clearInterval(monster4Leaves)
-    }, 800)
+      const monster4Leaves = setInterval(() => {
+        cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+        monsters[3].currentPosition -= width
+        cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+      }, 200)
 
+      setTimeout(() => {
+        clearInterval(monster4Leaves)
+      }, 800)
+    }, 2400)
   }
 
   // ? Monster Reset (Gets sent home)
