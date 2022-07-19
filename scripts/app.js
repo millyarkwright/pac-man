@@ -6,7 +6,9 @@ function init() {
   const scoreText = document.querySelector('.scoreText')
   const livesText = document.querySelector('.livesText')
   const dotsText = document.querySelector('.dotsText')
+  const playButton = document.querySelector('.play-button')
 
+  console.log(playButton)
 
   // ! Variables
 
@@ -225,7 +227,7 @@ function init() {
     
   //   // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
   //   // 
-  //   // Want to stagger each monster leaving - would i be able to use a forEach monster loop for hte below interval and still stagger each one?
+  //   // Want to stagger each monster leaving -
     const monster1Leaves = setInterval(() => {
       cells[monsters[0].currentPosition].classList.remove(monsters[0].name, 'monster')
       monsters[0].currentPosition -= width
@@ -246,9 +248,35 @@ function init() {
       clearInterval(monster2Leaves)
     }, 800)
 
-  }
+    cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+    monsters[2].currentPosition += 1
+    cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
 
-  monsterLeaveHome()
+    const monster3Leaves = setInterval(() => {
+      cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+      monsters[2].currentPosition -= width
+      cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+    }, 200)
+
+    setTimeout(() => {
+      clearInterval(monster3Leaves)
+    }, 800)
+
+    cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+    monsters[3].currentPosition -= 1
+    cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+
+    const monster4Leaves = setInterval(() => {
+      cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+      monsters[3].currentPosition -= width
+      cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+    }, 200)
+
+    setTimeout(() => {
+      clearInterval(monster4Leaves)
+    }, 800)
+
+  }
 
   // ? Monster Reset (Gets sent home)
 
@@ -334,7 +362,7 @@ function init() {
 
   // Add event listener for user pressing arrow keys to move hero
   document.addEventListener('keydown', heroMove)
-
+  playButton.addEventListener('click', monsterLeaveHome)
 
 }
 
