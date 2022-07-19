@@ -20,11 +20,8 @@ function init() {
   // Cell Variables/Arrays
 
   const tunnelSides = [280, 308, 336, 338, 281, 282, 283, 284, 309, 310, 311, 312, 337, 339, 340, 303, 304, 305, 306, 307, 331, 332, 333, 334, 335, 359, 360, 361, 362, 363, 448, 449, 450, 451, 452, 476, 477, 478, 479, 480, 504, 505, 506, 507, 508, 471, 472, 473, 474, 475, 499, 500, 501, 502, 503, 527, 528, 529, 530, 531]
-
   const tunnel = [29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 57, 62, 68, 71, 77, 82, 85, 90, 96, 99, 105, 110, 113, 118, 124, 127, 133, 138, 141,142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 169, 174, 177, 186, 189, 194, 197, 202, 205, 214, 217, 222, 225, 226, 227, 228, 229, 230, 233, 234, 235, 236, 239, 240, 241, 242, 245, 246, 247, 248, 249, 250, 258, 264, 267, 273, 286, 292, 295, 301, 314, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 329, 342, 345, 354, 357, 370, 373, 382, 385, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 426, 429, 438, 441, 454, 457, 466, 469, 482, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 497, 510, 513, 522, 525, 538, 541, 550, 553, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 589, 594, 600, 603, 609, 614, 617, 622, 628, 631, 637, 642, 645, 646, 647, 650, 651, 652, 653, 654, 655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 668, 669, 670, 675, 678, 681, 690, 693, 696, 703, 706, 709, 718, 721, 724, 729, 730, 731, 732, 733, 734, 737, 738, 739, 740, 743, 744, 745, 746, 749, 750, 751, 752, 753, 754, 757, 768, 771, 782, 785, 796, 799, 810, 813, 814, 815, 816, 827, 817,818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838]
-
   const monsterHome = [349, 350, 377, 378, 404, 405, 406, 407, 432, 433, 434, 435, 431, 436, 403, 408]
-
   const energiser = [85, 110, 645, 670]
 
   // (Starting) position for Hero
@@ -50,9 +47,9 @@ function init() {
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 434, 200, 'chaser', 90),
-    new Monster('Monster2', 432, 250, 'ambush', 246),
-    new Monster('Monster3', 433, 300, 'all', 734),
+    new Monster('Monster1', 433, 200, 'chaser', 90),
+    new Monster('Monster2', 434, 250, 'ambush', 246),
+    new Monster('Monster3', 432, 300, 'all', 734),
     new Monster('Monster4', 435, 350, 'random', 661)
   ]
 
@@ -60,10 +57,21 @@ function init() {
   console.log(monsters[1])
   console.log(monsters[3].nature)
 
-  // Monster1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
+  // Monster 1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
   // Monster 2 = follow hero's direction but not hero itself (then tries to go round the walls to take hero out). Sometimes will turn away if comes face to face to hero - in "scatter" mode
   // Monster 3 = does a mix of the three others... 
   // Monster 4 = when leaving the home, head to hero, but once clse, turn direections to head back to "scatter" phase 
+
+  // ? Monsters (should Class & Object not work)
+
+  // const m1StartingPosition = 434
+  // const m2StartingPosition = 432
+  // const m3StartingPosition = 433
+  // const m4StartingPosition = 435
+  // let m1currentPosition = m1StartingPosition
+  // let m2currentPosition = m1StartingPosition
+  // let m3currentPosition = m1StartingPosition
+  // let m4currentPosition = m1StartingPosition
 
   // Score - Dots - Lives
   
@@ -120,9 +128,8 @@ function init() {
 
   // Place Monsters on Grid
 
-  monsters.forEach(monster => {
-    cells[monster.currentPosition].classList.add(monster.name, 'monster')
-  })
+  monsters.forEach(monster => cells[monster.currentPosition].classList.add(monster.name, 'monster')
+  )
 
   // ! Executions
     
@@ -211,17 +218,18 @@ function init() {
   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
 
 
-  // // ? GET MONSTERS OUT OF HOME 
+  // ? GET MONSTERS OUT OF HOME 
+  
 
   function monsterLeaveHome() {
     
-    // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
-    // 
-    // Want to stagger each monster leaving - would i be able to use a forEach monster loop for hte below interval and still stagger each one?
+  //   // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
+  //   // 
+  //   // Want to stagger each monster leaving - would i be able to use a forEach monster loop for hte below interval and still stagger each one?
     const monster1Leaves = setInterval(() => {
-      cells[monster[0].currentPosition].classList.remove(monster[0].name, 'monster')
-      monster[0].currentPosition -= width
-      cells[monster[0].currentPosition].classList.add(monster[0].name, 'monster')
+      cells[monsters[0].currentPosition].classList.remove(monsters[0].name, 'monster')
+      monsters[0].currentPosition -= width
+      cells[monsters[0].currentPosition].classList.add(monsters[0].name, 'monster')
     }, 200)
     
     setTimeout(() => {
@@ -229,13 +237,20 @@ function init() {
     }, 800)
 
     const monster2Leaves = setInterval(() => {
-      cells[monster[1]].classList.remove(monster[1].name, 'monster')
-      monster[1].currentPosition -= width
-      cells[monster[1]].classList.add(monster[1].name, 'monster')
+      cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
+      monsters[1].currentPosition -= width
+      cells[monsters[1].currentPosition].classList.add(monsters[1].name, 'monster')
     }, 200)
 
-    // For Monsters 3 & 4, need to move them one cell right and left (respectively) and then start the same interval above. m
+    setTimeout(() => {
+      clearInterval(monster2Leaves)
+    }, 800)
+
   }
+
+  monsterLeaveHome()
+
+  // ? Monster Reset (Gets sent home)
 
 
   function monsterMoveFrightened(monster){
