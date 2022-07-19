@@ -238,6 +238,7 @@ function init() {
     }, 800)
 
     setTimeout(() => {
+      monsterMoveChase(monsters, [0])
       const monster2Leaves = setInterval(() => {
         cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
         monsters[1].currentPosition -= width
@@ -248,7 +249,8 @@ function init() {
       }, 800)
     }, 800)
 
-    setTimeout(() => { 
+    setTimeout(() => {
+      monsterMoveChase(monsters, [1]) 
       cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
       monsters[2].currentPosition += 1
       cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
@@ -265,6 +267,7 @@ function init() {
     }, 1600)
 
     setTimeout(() => {
+      monsterMoveChase(monsters, [2]) 
       cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
       monsters[3].currentPosition -= 1
       cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
@@ -279,25 +282,29 @@ function init() {
         clearInterval(monster4Leaves)
       }, 800)
     }, 2400)
+
+    monsterMoveChase(monsters, [3]) 
+
   }
 
   // ? Monster Reset (Gets sent home)
 
+  // ? MonsterMovement When In Chase Mode
 
-  function monsterMoveFrightened(monster){
+  function monsterMoveChase(monsters,[index]){
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
     setInterval(function() {
-    // If next random move the monster wants to make is to a cell that doesn't contain maze 
-      if (!cells[monster.currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster.currentPosition + monsterRandomMove].classList.contains('monster')) {
+    // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+      if (!cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monster') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome')) {
       // Remove ghost classes
-        cells[monster.currentPosition].classList.remove(monster.name, 'monster', 'frightened')
+        cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster')
         // Move into new cell
-        monster.currentPosition += monsterRandomMove
-        cells[monster.currentPosition].classList.add(monster.name, 'monster', 'frightened')
+        monsters[index].currentPosition += monsterRandomMove
+        cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster')
       } else {
         monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
       }
-    }, monster.speed)
+    }, monsters[index].speed)
   }
 
 // whilst (!monster.frightenedMode) {
@@ -314,10 +321,24 @@ function init() {
 //       }
 //     }
 
-//   }
-// }
 
+  // ? Monster Movement When Frightened:
 
+  function monsterMoveFrightened(monster){
+    // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+    setInterval(function() {
+    // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+      if (!cells[monster.currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster.currentPosition + monsterRandomMove].classList.contains('monster')) {
+      // Remove ghost classes
+        cells[monster.currentPosition].classList.remove(monster.name, 'monster', 'frightened')
+        // Move into new cell
+        monster.currentPosition += monsterRandomMove
+        cells[monster.currentPosition].classList.add(monster.name, 'monster', 'frightened')
+      } else {
+        monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+      }
+    }, monster.speed)
+  }
 
   // ? One overarching function for monsterMove: 
   // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
