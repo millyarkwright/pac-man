@@ -5,6 +5,13 @@
 body {
   height: 100vh;
   margin: 0;
+  font-family: 'Julius Sans One', sans-serif;
+  color: #2b1706;
+  background-image: url(../assets/Knossos-palace-at-Crete.jpeg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
 }
 
 main {
@@ -19,25 +26,60 @@ main {
 #intro-wrapper {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
   margin: 10px;
+  background-image: url(../assets/blank-scroll-removebg-preview.png);
+  background-size: 440px 755px;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* background-color: rgba(209, 200, 166, 0.6); */
+  max-width: 400px;
+  max-height: 688px;
+}
+
+h1 {
+  font-size: 40px;
+  line-height: 1.2;
+  margin-top: 90px;
+  margin-bottom: 0px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+div.instructions p {
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 22px 20px 22px 25px;
+
 }
 
 .play-button {
-  background-color: red;
-  padding: 5px 10px;
-  margin: 0;
-  font-size: 16px;
+  background-color: #D1C8A6;
+  color: #46270B;
+  border: 3px solid #46270B;
   border-radius: 10px;
+  font-size: 30px;
+  font-family: 'Julius Sans One', sans-serif;
+  padding: 10px 50px;
+  margin-bottom: 22px;
   cursor: pointer;
+}
 
+article {
+  font-size: 16px;
+  margin: 0px 18px 85px 35px; 
 }
 
 /* Game Wrapper (Lives & Score + Grid) CSS */
 
 #game-wrapper {
   margin: 10px;
+  /* background-color: rgba(209, 200, 166, 0.6); */
+
 }
 
 /*  Lives & Score CSS */
@@ -46,6 +88,8 @@ main {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  background-color: rgba(209, 200, 166, 0.6);
+
 }
 
 #progress-container p {
@@ -64,7 +108,7 @@ main {
 
 .grid div{
   background: #D1C8A6;
-  border-radius: 5%;
+  /* border-radius: 5%; */
   height: 20px;
   width: 20px;
 }

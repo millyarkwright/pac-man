@@ -4,17 +4,20 @@
     <title>Project Pac Man</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="scripts/app.js" charset="utf-8"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap" rel="stylesheet">
   </head>
   <body>
     <main>
       <section id="intro-wrapper">
-        <h1>Game Title</h1>
-        <article>Story</article>
+        <h1>Theseus & the Minotaur</h1>
         <div class="instructions">
-          <h2>Instructions Title</h2>
-          <p class="instructions">Instructions</p>
+          <!-- <h2>Game Instructions</h2> -->
+          <p>Help Theseus navigate the Minotaur's labyrinth by using the arrow keys.</p>
+          <p>Collect all the gold coins in order to escape and sail back to Athens.</p>
+          <p>Find Ariadne to protect you from the Minotaurs.</p>
         </div>
         <button class="play-button">PLAY</button>
+        <article>Click here to read more about the myth of Theseus & the Minotaur</article>
       </section>
       <section id="game-wrapper">
         <div id="progress-container">
@@ -27,7 +30,14 @@
       </section>
     </main>
     <footer>
-
+      <div class="gameOver">
+        <p class="gameOver">Game Over!</p>
+        <button class="playAgain-button">Play again?</button>
+      </div>
+      <div id="gameWon">
+        <p class="gameWon">You Won!</p>
+        <button class="playAgain-button">Play again?</button>
+      </div>
     </footer>
   </body>
   

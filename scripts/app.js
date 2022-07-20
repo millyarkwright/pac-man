@@ -26,19 +26,21 @@ function init() {
   const monsterHome = [349, 350, 377, 378, 404, 405, 406, 407, 432, 433, 434, 435, 431, 436, 403, 408]
   const energiser = [85, 110, 645, 670]
 
-  // (Starting) position for Hero
+  // Position for Hero
   const heroStartingPosition = 657
   let heroCurrentPosition = heroStartingPosition
 
-  // Class & Objects for Monsters 
+
+  // ! Class & Objects for Monsters 
 
   class Monster {
-    constructor(name, startPosition, speed, nature, targetCell) {
+    constructor(name, monsterIndex, startPosition, speed, nature, targetCell) {
       this.name = name
+      this.monsterIndex = monsterIndex
       this.startPosition = startPosition
       this.speed = speed
-      this.nature = nature
-      this.targetCell = targetCell
+      // this.nature = nature
+      // this.targetCell = targetCell
       // would like to make the tagetCell randomly generated for each monster (would need to be in each corner though - stretch goal perhaps)
       this.currentPosition = startPosition
     }
@@ -46,20 +48,14 @@ function init() {
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 433, 200, 'chaser', 90),
-    new Monster('Monster2', 434, 250, 'ambush', 246),
-    new Monster('Monster3', 432, 300, 'all', 734),
-    new Monster('Monster4', 435, 350, 'random', 661)
+    new Monster('Monster1', 0, 433, 400, 'chaser', 90),
+    new Monster('Monster2', 1, 434, 600, 'ambush', 246),
+    new Monster('Monster3', 2, 432, 800, 'all', 734),
+    new Monster('Monster4', 3, 435, 1000, 'random', 661)
   ]
 
   console.log(monsters)
   console.log(monsters[1])
-  console.log(monsters[3].nature)
-
-  // Monster 1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
-  // Monster 2 = follow hero's direction but not hero itself (then tries to go round the walls to take hero out). Sometimes will turn away if comes face to face to hero - in "scatter" mode
-  // Monster 3 = does a mix of the three others... 
-  // Monster 4 = when leaving the home, head to hero, but once clse, turn direections to head back to "scatter" phase 
 
   // Frightened Mode Variable 
 
@@ -80,10 +76,10 @@ function init() {
 
   // Take the cellCount (see Variables) and create a new <div> on each loop and attach it to the grid container. Adding in a dataset of "index" so it's easy to find the index number of cells to start/place the Hero, Monsters and Energisers. 
 
-  for (let i = 0; i < cellCount; i++){
+  for (let i = 0; i < cellCount; i++) {
     const cell = document.createElement('div')
     cell.classList.add('maze')
-    cell.dataset.index = i
+    cell.dataset.cell = i
     cells.push(cell)
     grid.appendChild(cell)
   }
@@ -122,19 +118,20 @@ function init() {
 
   monsters.forEach((monster) => {
     cells[monster.currentPosition].classList.add(monster.name, 'monster')
+    cells[monster.currentPosition].dataset.monsterIndex = monster.monsterIndex
   })
-
+  
 
   // ! Executions
     
   // ? Hero Movement
 
   // Function for adding & removing Hero from cells
-  function removeHero(position){
+  function removeHero(position) {
     cells[position].classList.remove('hero')
   }
 
-  function addHero(position){
+  function addHero(position) {
     cells[position].classList.add('hero')
   }
 
@@ -173,77 +170,45 @@ function init() {
     collectEnergiser(heroCurrentPosition)
     // heroMeetsMonster(heroCurrentPosition)
   }
-   
-  // Function for collecting dots 
+
+  // Function for collecting dost
   function collectDots(position) {
     if (cells[position].classList.contains('dots')) {
       scoreText.innerHTML = score += dotValue
       dotsText.innerHTML = dots -= 1
       cells[position].classList.remove('dots')
     }
+    if (dots === 0) {
+      gameWon()
+    }
   }
 
   // Function for collecting energisers
+
   function collectEnergiser(position) {
     if (cells[position].classList.contains('energiser')) {
       // Add Score
       scoreText.innerHTML = score += energiserValue
       // Make Ghosts frightened - add class of 'frightened', change variable of frightenedMode to True
       frightenedMode = true
-      monsters.forEach(monster => cells[monster.currentPosition].classList.add('frightened'))
+      // monsters.forEach(monster => cells[monster.currentPosition].classList.add('frightened'))
       // Add timeout for frightenedMode & frightened Class
       setTimeout(() => {
         frightenedMode = false
-        monsters.forEach(monster => cells[monster.currentPosition].classList.remove('frightened'))
+        // monsters.forEach(monster => cells[monster.currentPosition].classList.remove('frightened'))
       }, 10 * 1000)
       // Remove the energiser from cell
       cells[position].classList.remove('energiser')
     }
   }
-  
-  function heroMeetsMonster (monsters) {
-    if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster1')) {
-      monsterReset(monsters, [0])
-      scoreText.innerHTML = score += frightenedMonsterValue
-    } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
-      monsterReset(monsters, [1])
-      scoreText.innerHTML = score += frightenedMonsterValue
-    } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
-      monsterReset(monsters, [2])
-      scoreText.innerHTML = score += frightenedMonsterValue
-    } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
-      monsterReset(monsters, [3])
-      scoreText.innerHTML = score += frightenedMonsterValue
-    }
-    if (!monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster')) {
-      lives -= 1
-      livesText.innerHTML = lives
-    }
-  }
 
-  // function heroMeetsMonster(position) {
-  //   // console.log(monsters[0].frightenedMode)
-  //   console.log(score)
-  //   while (monsters[0].frightenedMode) { 
-  //     if (cells[position].classList.contains('monster1')) {
-  //       // monsterReset(monsters, [0])
-  //       scoreText.innerHTML = score += frightenedMonsterValue
-  //       console.log(score = score + 200)
-  //     } else if (cells[position].classList.contains('monster2')) {
-  //     // monsterReset(monsters, [1])
-  //       scoreText.innerHTML = score += frightenedMonsterValue
-  //       console.log(score = score + 200)
-  //     } else if (cells[position].classList.contains('monster3')) {
-  //     // monsterReset(monsters, [2])
-  //       scoreText.innerHTML = score += frightenedMonsterValue
-  //       console.log(score = score + 200)
-  //     } else if (cells[position].classList.contains('monster4')) {
-  //     // monsterReset(monsters, [3])
-  //       scoreText.innerHTML = score += frightenedMonsterValue
-  //       console.log(score = score + 200)
-  //     } 
-  //   }
-  // }
+  // Scared monster movement function 
+
+  // remove class list frightened
+  // move to new cell 
+  // add class list frightened
+
+
  
   // ! Execution: Monster Movement 
 
@@ -257,8 +222,12 @@ function init() {
 
     const monster1Leaves = setInterval(() => {
       cells[monsters[0].currentPosition].classList.remove(monsters[0].name, 'monster')
+      cells[monsters[0].currentPosition].removeAttribute('data-monster-index')
+
       monsters[0].currentPosition -= width
+
       cells[monsters[0].currentPosition].classList.add(monsters[0].name, 'monster')
+      cells[monsters[0].currentPosition].dataset.monsterIndex = monsters[0].monsterIndex
     }, 200)
     
     setTimeout(() => {
@@ -269,8 +238,12 @@ function init() {
       monstersMoveChase(monsters, [0])
       const monster2Leaves = setInterval(() => {
         cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
+        cells[monsters[1].currentPosition].removeAttribute('data-monster-index')
+
         monsters[1].currentPosition -= width
+
         cells[monsters[1].currentPosition].classList.add(monsters[1].name, 'monster')
+        cells[monsters[1].currentPosition].dataset.monsterIndex = monsters[1].monsterIndex
       }, 200)
       setTimeout(() => {
         clearInterval(monster2Leaves)
@@ -280,13 +253,21 @@ function init() {
     setTimeout(() => {
       monstersMoveChase(monsters, [1]) 
       cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+      cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+
       monsters[2].currentPosition += 1
+
       cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+      cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
       const monster3Leaves = setInterval(() => {
         cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+        cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+
         monsters[2].currentPosition -= width
+
         cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+        cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
       }, 200)
 
       setTimeout(() => {
@@ -297,13 +278,22 @@ function init() {
     setTimeout(() => {
       monstersMoveChase(monsters, [2]) 
       cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+      cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+
       monsters[3].currentPosition -= 1
+
       cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+      cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+
 
       const monster4Leaves = setInterval(() => {
         cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+        cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+
         monsters[3].currentPosition -= width
+
         cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+        cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
       }, 200)
 
       setTimeout(() => {
@@ -314,21 +304,31 @@ function init() {
     setTimeout(() => { 
       monstersMoveChase(monsters, [3]) 
     }, 3200)
-
   }
+    
 
   // ! Monster Move (Mode) Execution 
 
   const monsterNextMove = [-1, +1, -width, + width]
 
-  // ? MonsterMovement When In Chase Mode
+  // ? MonsterMovement 
 
   function monstersMoveChase(monsters,[index]){
     let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
     setInterval(function() {
       cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster')
+      cells[monsters[index].currentPosition].removeAttribute('data-monster-index')
+
+      // If current position is in the home 
+      if (cells[monsters[index].currentPosition === 432]) {
+        cells[monsters[index].currentPosition] = +1
+      } else if (cells[monsters[index].currentPosition === 435]) {
+        cells[monsters[index].currentPosition] = -1
+      } else if (cells[monsters[index].currentPosition === 433] || cells[monsters[index].currentPosition === 434] || cells[monsters[index].currentPosition === 405] || cells[monsters[index].currentPosition === 406] || cells[monsters[index].currentPosition === 377] || cells[monsters[index].currentPosition === 378] || cells[monsters[index].currentPosition === 349] || cells[monsters[index].currentPosition === 350]) {
+        cells[monsters[index].currentPosition] = -width
       // If next move is through the tunnel 
+      } else 
       if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === +1) {
         monsters[index].currentPosition = 392
       } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
@@ -341,37 +341,358 @@ function init() {
         monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
       }
       cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster')
-      checkCollision(monsters[index].currentPosition)
+      cells[monsters[index].currentPosition].dataset.monsterIndex = monsters[index].monsterIndex
+
+      checkCollision(monsters[index].currentPosition, monsters[index].monsterIndex, heroCurrentPosition)
+      
     }, monsters[index].speed)
   }
+  
 
-  function checkCollision(position) {
-    if (cells[position].classList.contains('hero')) {
-      console.log('monsterindex-->', monsters.name)
+  // ? FUNCTION FOR CHECKING FOR COLLISION
+
+  function checkCollision(monsterPosition, monsterIndex, heroPosition) {
+    if (cells[monsterPosition].classList.contains('hero') || cells[heroPosition].classList.contains('monster')) {
+      console.log('collision')
+      console.log('monsterindex-->', monsterIndex)
       if (frightenedMode) {
-        monsterReset(monsters,[1])
-        console.log('monsterreset')
+        monsterReset(monsterIndex)
+        console.log('monster reset')
       } else {
         livesText.innerHTML = lives -= 1
-        // checkfor game over funciton
+        checkGameOver()
       }
-      console.log('collision')
     }
   }
 
-// whilst (!monster.frightenedMode) {
-//   forEach monster {
-//     if (monster has hit a barrier) {
-//       if (hero is to the left) turn left 
-//       if (hero is tot he right) turn right
-//       if (hero is to the top) turn upwards
-//       if (hero is to the bottom) turn downwards
-//     } else {
-//       go straight
-//       if (monster hits hero) {
-//         hero = dead
-//       }
-//     }
+  // ? Monster Reset (Gets sent home)
+
+  function monsterReset(monsterIndex) {
+    console.log(monsterIndex)
+    
+    cells[monsters[monsterIndex].currentPosition].classList.remove(monsters[monsterIndex].name, 'monster', 'frightened')
+    cells[monsters[monsterIndex].currentPosition].removeAttribute('data-monster-index')
+
+    cells[monsters[monsterIndex].currentPosition] = cells[monsters[monsterIndex].startPosition]
+
+    cells[monsters[monsterIndex].currentPosition].classList.add(monsters[monsterIndex].name,'monster')
+    cells[monsters[monsterIndex].currentPosition].dataset.monsterIndex = monsters[monsterIndex].monsterIndex
+
+    // monstersMove()
+  }
+
+  // ! Game Over 
+
+  function checkGameOver() {
+    if (lives === 0) {
+      console.log('Game over')
+      // pause game 
+      // make div appear with final score and "Play Again" button
+      // add event listener to play again button. 
+    }
+  }
+
+  // ! Game Wom
+
+  function gameWon() {
+    console.log('game won!')
+    // make div appear with final score and "play again" button
+    //add event listener to the play again button
+  }
+
+
+  // ! Events
+
+  // Add event listener for user pressing arrow keys to move hero
+  window.addEventListener('keydown', function(e) {
+    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+      e.preventDefault()
+    }
+  }, false)
+  window.addEventListener('keydown', heroMove)
+  playButton.addEventListener('click', monstersMove)
+
+}
+
+window.addEventListener('DOMContentLoaded', init)
+
+
+
+// ----------------------------------------------------
+
+// cells[monster1CurrentPosition].classList.add('monster1', 'monster')
+// cells[monster2CurrentPosition].classList.add('monster2', 'monster')
+// cells[monster3CurrentPosition].classList.add('monster3', 'monster')
+// cells[monster4CurrentPosition].classList.add('monster4', 'monster')
+
+// ? MONSTER NATURES 
+
+  // Monster 1 = leader, leaves box 1st, always trailing behind hero. start at hero speed and will get faster as more dots are collected 
+  // Monster 2 = follow hero's direction but not hero itself (then tries to go round the walls to take hero out). Sometimes will turn away if comes face to face to hero - in "scatter" mode
+  // Monster 3 = does a mix of the three others... 
+  // Monster 4 = when leaving the home, head to hero, but once clse, turn direections to head back to "scatter" phase 
+
+
+  // ! Function for collecting energisers (alternative)
+
+
+// function collectEnergiser(position) {
+//   if (cells[position].classList.contains('energiser')) {
+//     // Add Score
+//     scoreText.innerHTML = score += energiserValue
+//     // Make Ghosts frightened - add class of 'frightened', change variable of frightenedMode to True
+//     frightenedMode = true
+//     cells[monster1CurrentPosition].classList.add('frightened')
+//     cells[monster2CurrentPosition].classList.add('frightened')
+//     cells[monster3CurrentPosition].classList.add('frightened')
+//     cells[monster4CurrentPosition].classList.add('frightened')
+//     // Add timeout for frightenedMode & frightened Class
+//     setTimeout(() => {
+//       frightenedMode = false
+//       cells[monster1CurrentPosition].classList.remove('frightened')
+//       cells[monster2CurrentPosition].classList.remove('frightened')
+//       cells[monster3CurrentPosition].classList.remove('frightened')
+//       cells[monster4CurrentPosition].classList.remove('frightened')
+//     }, 20 * 1000)
+//     // Remove the energiser from cell
+//     cells[position].classList.remove('energiser')
+//   }
+// }
+
+
+
+  // ! Execution: Monster Movement 
+
+  // ? GET MONSTERS OUT OF HOME 
+  
+
+  // function monstersMove() {
+    
+  //   // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
+  //   // Want to stagger each monster leaving - Monster2 will have to wait 8 secs before moving, MOnster 3 16 secs and Monster 4 24 secs
+
+  //   const monster1Leaves = setInterval(() => {
+//     cells[monster1CurrentPosition].classList.remove('monster1', 'monster')
+//     monster1CurrentPosition -= width
+//     cells[monster1CurrentPosition].classList.add('monster1', 'monster')
+//   }, 200)
+  
+//   setTimeout(() => {
+//     clearInterval(monster1Leaves)
+//   }, 800)
+
+//   setTimeout(() => {
+//     monster1Moves()
+//     const monster2Leaves = setInterval(() => {
+//       cells[monster2CurrentPosition].classList.remove('monster2', 'monster')
+//       monster2CurrentPosition -= width
+//       cells[monster2CurrentPosition].classList.add('monster2', 'monster')
+//     }, 200)
+//     setTimeout(() => {
+//       clearInterval(monster2Leaves)
+//     }, 800)
+//   }, 800)
+
+//   setTimeout(() => {
+//     monster2Moves()
+//     cells[monster3CurrentPosition].classList.remove('monster3', 'monster')
+//     monster3CurrentPosition += 1
+//     cells[monster3CurrentPosition].classList.add('monster3', 'monster')
+
+//     const monster3Leaves = setInterval(() => {
+//       cells[monster3CurrentPosition].classList.remove('monster3', 'monster')
+//       monster3CurrentPosition -= width
+//       cells[monster3CurrentPosition].classList.add('monster3', 'monster')
+//     }, 200)
+
+//     setTimeout(() => {
+//       clearInterval(monster3Leaves)
+//     }, 800)
+//   }, 1600)
+
+//   setTimeout(() => {
+//     monster3Moves()
+//     cells[monster4CurrentPosition].classList.remove('monster4', 'monster')
+//     monster4CurrentPosition -= 1
+//     cells[monster4CurrentPosition].classList.add('monster4', 'monster')
+
+//     const monster4Leaves = setInterval(() => {
+//       cells[monster4CurrentPosition].classList.remove('monster4', 'monster')
+//       monster4CurrentPosition -= width
+//       cells[monster4CurrentPosition].classList.add('monster4', 'monster')
+//     }, 200)
+
+//     setTimeout(() => {
+//       clearInterval(monster4Leaves)
+//     }, 800)
+//   }, 2400)
+  
+//   setTimeout(() => { 
+//     monster4Moves
+//   }, 3200)
+
+// }
+ 
+
+  // // ! Monster Move (Mode) Execution 
+
+  // const monsterNextMove = [-1, +1, -width, + width]
+
+  // function monster1Moves(){
+  //   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //   // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+  //   setInterval(function() {
+  //     cells[monster1CurrentPosition].classList.remove('monster1', 'monster')
+  //     // If next move is through the tunnel 
+  //     if (cells[monster1CurrentPosition === 319] && monsterRandomMove === +1) {
+  //       monster1CurrentPosition = 392
+  //     } else if (cells[monster1CurrentPosition === 392] && monsterRandomMove === -1) {
+  //       monster1CurrentPosition = 319
+  //     // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+  //     } else if (!cells[monster1CurrentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster1CurrentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+  //       // Move into new cell
+  //       monster1CurrentPosition += monsterRandomMove
+  //     } else {
+  //       monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //     }
+  //     cells[monster1CurrentPosition].classList.add('monster1', 'monster')
+  //     checkCollision(monster1CurrentPosition)
+  //   }, 200)
+  // }
+
+  // function monster2Moves(){
+  //   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //   // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+  //   setInterval(function() {
+  //     cells[monster2CurrentPosition].classList.remove('monster2', 'monster')
+  //     // If next move is through the tunnel 
+  //     if (cells[monster2CurrentPosition === 319] && monsterRandomMove === +1) {
+  //       monster2CurrentPosition = 392
+  //     } else if (cells[monster2CurrentPosition === 392] && monsterRandomMove === -1) {
+  //       monster2CurrentPosition = 319
+  //     // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+  //     } else if (!cells[monster2CurrentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster2CurrentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+  //       // Move into new cell
+  //       monster2CurrentPosition += monsterRandomMove
+  //     } else {
+  //       monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //     }
+  //     cells[monster2CurrentPosition].classList.add('monster2', 'monster')
+  //     checkCollision(monster2CurrentPosition)
+  //   }, 200)
+  // }
+
+  // function monster3Moves(){
+  //   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //   // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+  //   setInterval(function() {
+  //     cells[monster3CurrentPosition].classList.remove('monster3', 'monster')
+  //     // If next move is through the tunnel 
+  //     if (cells[monster3CurrentPosition === 319] && monsterRandomMove === +1) {
+  //       monster3CurrentPosition = 392
+  //     } else if (cells[monster3CurrentPosition === 392] && monsterRandomMove === -1) {
+  //       monster3CurrentPosition = 319
+  //     // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+  //     } else if (!cells[monster3CurrentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster3CurrentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+  //       // Move into new cell
+  //       monster3CurrentPosition += monsterRandomMove
+  //     } else {
+  //       monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //     }
+  //     cells[monster3CurrentPosition].classList.add('monster3', 'monster')
+  //     checkCollision(monster3CurrentPosition)
+  //   }, 200)
+  // }
+
+  // function monster4Moves(){
+  //   let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //   // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+  //   setInterval(function() {
+  //     cells[monster4CurrentPosition].classList.remove('monster4', 'monster')
+  //     // If next move is through the tunnel 
+  //     if (cells[monster4CurrentPosition === 319] && monsterRandomMove === +1) {
+  //       monster4CurrentPosition = 392
+  //     } else if (cells[monster4CurrentPosition === 392] && monsterRandomMove === -1) {
+  //       monster4CurrentPosition = 319
+  //     // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+  //     } else if (!cells[monster4CurrentPosition + monsterRandomMove].classList.contains('maze') && !cells[monster4CurrentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+  //       // Move into new cell
+  //       monster4CurrentPosition += monsterRandomMove
+  //     } else {
+  //       monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //     }
+  //     cells[monster4CurrentPosition].classList.add('monster4', 'monster')
+  //     checkCollision(monster4CurrentPosition)
+  //   }, 200)
+  // }
+
+  // function checkCollision(position) {
+  //   if (cells[position].classList.contains('hero')) {
+  //     if (frightenedMode) {
+  //       monster1Reset()
+  //       // monster2Reset()
+  //       // monster3Reset()
+  //       // monster4Reset()
+
+  //       console.log('monster reset')
+  //     } else {
+  //       livesText.innerHTML = lives -= 1
+  //       checkGameOver()
+  //     }
+  //     console.log('collision')
+  //   }
+  // }
+
+
+
+  // function monster1Reset() {
+  //   cells[monster1CurrentPosition].classList.remove('monster1', 'monster', 'frightened', 'hero')
+  //   cells[monster1CurrentPosition] = cells[monster1StartingPosition]
+  //   cells[monster1CurrentPosition].classList.add('monster1', 'monster')
+  // }
+
+  // function monster2Reset() {
+  //   cells[monster2CurrentPosition].classList.remove('monster2', 'monster', 'frightened', 'hero')
+  //   cells[monster2CurrentPosition] = cells[monster2StartingPosition]
+  //   cells[monster2CurrentPosition].classList.add('monster2', 'monster')
+  // }
+
+  // function monster3Reset() {
+  //   cells[monster3CurrentPosition].classList.remove('monster3', 'monster', 'frightened', 'hero')
+  //   cells[monster3CurrentPosition] = cells[monster3StartingPosition]
+  //   cells[monster3CurrentPosition].classList.add('monster3', 'monster')
+  // }
+
+  // function monster4Reset() {
+  //   cells[monster4CurrentPosition].classList.remove('monster4', 'monster', 'frightened', 'hero')
+  //   cells[monster4CurrentPosition] = cells[monster4StartingPosition]
+  //   cells[monster4CurrentPosition].classList.add('monster4', 'monster')
+  // }
+
+    // Position for Monsters
+
+    // const monster1StartingPosition = 433
+    // const monster2StartingPosition = 434
+    // const monster3StartingPosition = 432
+    // const monster4StartingPosition = 435
+    // let monster1CurrentPosition = monster1StartingPosition
+    // let monster2CurrentPosition = monster2StartingPosition
+    // let monster3CurrentPosition = monster3StartingPosition
+    // let monster4CurrentPosition = monster4StartingPosition
+
+
+
+  // ? One overarching function for monsterMove: 
+  // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
+
+  // All functions below will use these directions so make global variables?
+
+//   function monsterMovement() {
+//     if (monster.frightened)
+//   }
+
+//   // ? Function for MonsterMovement in Frightened Mode - 
+//   // All monsters will do the same things (random movement) so 1 function
 
 
   // ? Monster Movement When Frightened:
@@ -396,36 +717,37 @@ function init() {
   //   }, 10 * 1000)
   // }
 
+  // if (frightenedMode) {
+  //   setInterval(function() {
+  //     cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster', 'frightened')
+  //     // If current position is in the home 
+  //     if (cells[monsters[index].currentPosition === 432]) {
+  //       cells[monsters[index].currentPosition] = +1
+  //     } else if (cells[monsters[index].currentPosition === 435]) {
+  //       cells[monsters[index].currentPosition] = -1
+  //     } else if (cells[monsters[index].currentPosition === 433] || cells[monsters[index].currentPosition === 434] || cells[monsters[index].currentPosition === 405] || cells[monsters[index].currentPosition === 406] || cells[monsters[index].currentPosition === 377] || cells[monsters[index].currentPosition === 378] || cells[monsters[index].currentPosition === 349] || cells[monsters[index].currentPosition === 350]) {
+  //       cells[monsters[index].currentPosition] = -width
+  //     // If next move is through the tunnel 
+  //     } else if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === +1) {
+  //       monsters[index].currentPosition = 392
+  //     } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
+  //       monsters[index].currentPosition = 319
+  //     // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
+  //     } else if (!cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+  //       // Move into new cell
+  //       monsters[index].currentPosition += monsterRandomMove
+  //     } else {
+  //       monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+  //     }
+  //     cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster', 'frightened')
 
-  // ? Monster Reset (Gets sent home)
+  //     checkCollision(monsters[index].currentPosition, monsters[index])
 
-  function monsterReset(monster, [index]) {
-    cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster', 'frightened')
-    cells[monsters[index].currentPosition] = cells[monsters[index].startPosition]
-    cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster', 'frightened')
-  }
+  //   }, monsters[index].speed)
+
+  // } else {
 
 
-
-  // cells[monster.currentPosition].classList.add(monster.name, 'monster')
-
-  // ? One overarching function for monsterMove: 
-  // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
-
-  // All functions below will use these directions so make global variables?
-
-//   function monsterMovement() {
-//     if (monster.frightened)
-//   }
-
-//   // ? Function for MonsterMovement in Frightened Mode - 
-//   // All monsters will do the same things (random movement) so 1 function
-
-// function frightenedMovement () {
-//   // Random Movemnet 
-
-//   }
-// }
 
 
   // ? Function for MonsterMovement in Scattered Mode - 
@@ -436,6 +758,19 @@ function init() {
   // ? Function for MonsterMovement in Chase Mode - 
   // All monsters behave as per their "nature":
 
+// whilst (!monster.frightenedMode) {
+//   forEach monster {
+//     if (monster has hit a barrier) {
+//       if (hero is to the left) turn left 
+//       if (hero is tot he right) turn right
+//       if (hero is to the top) turn upwards
+//       if (hero is to the bottom) turn downwards
+//     } else {
+//       go straight
+//       if (monster hits hero) {
+//         hero = dead
+//       }
+//     }
 
 
   
@@ -447,16 +782,51 @@ function init() {
   // Then we need to check the cell the monster is about to look into - currentposition + direction? - if that cell doesn't contain a wall, enemy home and doesn't leave the board completely, reassign current positions. If that new current position contains the hero, if the ghost isn't frightened (frightenedMode = fale) then call monster function above, if frightened (frightenedMode = true) then call fightened monster function above? 
 
 
+  // OLD CODE FOR IF HERO MET MONSTER
+
+    
+  // function heroMeetsMonster (monsters) {
+  //   if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster1')) {
+  //     monsterReset(monsters, [0])
+  //     scoreText.innerHTML = score += frightenedMonsterValue
+  //   } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
+  //     monsterReset(monsters, [1])
+  //     scoreText.innerHTML = score += frightenedMonsterValue
+  //   } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
+  //     monsterReset(monsters, [2])
+  //     scoreText.innerHTML = score += frightenedMonsterValue
+  //   } else if (monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster2')) {
+  //     monsterReset(monsters, [3])
+  //     scoreText.innerHTML = score += frightenedMonsterValue
+  //   }
+  //   if (!monsters.frightenedMode && cells[heroCurrentPosition].classList.contains('monster')) {
+  //     lives -= 1
+  //     livesText.innerHTML = lives
+  //   }
+  // }
+
+  // function heroMeetsMonster(position) {
+  //   // console.log(monsters[0].frightenedMode)
+  //   console.log(score)
+  //   while (monsters[0].frightenedMode) { 
+  //     if (cells[position].classList.contains('monster1')) {
+  //       // monsterReset(monsters, [0])
+  //       scoreText.innerHTML = score += frightenedMonsterValue
+  //       console.log(score = score + 200)
+  //     } else if (cells[position].classList.contains('monster2')) {
+  //     // monsterReset(monsters, [1])
+  //       scoreText.innerHTML = score += frightenedMonsterValue
+  //       console.log(score = score + 200)
+  //     } else if (cells[position].classList.contains('monster3')) {
+  //     // monsterReset(monsters, [2])
+  //       scoreText.innerHTML = score += frightenedMonsterValue
+  //       console.log(score = score + 200)
+  //     } else if (cells[position].classList.contains('monster4')) {
+  //     // monsterReset(monsters, [3])
+  //       scoreText.innerHTML = score += frightenedMonsterValue
+  //       console.log(score = score + 200)
+  //     } 
+  //   }
+  // }
 
 
-
-
-  // ! Events
-
-  // Add event listener for user pressing arrow keys to move hero
-  document.addEventListener('keydown', heroMove)
-  playButton.addEventListener('click', monstersMove)
-
-}
-
-window.addEventListener('DOMContentLoaded', init)
