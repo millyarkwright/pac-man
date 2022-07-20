@@ -157,7 +157,7 @@ div.monster {
   background-repeat: no-repeat;
 }
 
-.frightened {
+.frightened div.monster {
   background: #D1C8A6;
   animation: blink 0.5s infinite;
 }
