@@ -57,7 +57,7 @@ div.instructions p {
 
 }
 
-.play-button {
+button {
   background-color: #D1C8A6;
   color: #46270B;
   border: 3px solid #46270B;
@@ -77,7 +77,12 @@ article {
 /* Game Wrapper (Lives & Score + Grid) CSS */
 
 #game-wrapper {
-  margin: 10px;
+  margin: 10px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   /* background-color: rgba(209, 200, 166, 0.6); */
 
 }
@@ -89,7 +94,7 @@ article {
   justify-content: space-evenly;
   align-items: center;
   background-color: rgba(209, 200, 166, 0.6);
-
+  width: 560px;
 }
 
 #progress-container p {
@@ -104,6 +109,7 @@ article {
   justify-content: center;
   flex-wrap: wrap;
   width: 560px;
+  /* display: none; */
 }
 
 .grid div{
@@ -158,12 +164,25 @@ div.monster {
 }
 
 .frightened div.monster {
-  background: #D1C8A6;
-  animation: blink 0.5s infinite;
+  animation: blink 1s infinite;
 }
 
 @keyframes blink {
   50% {
     opacity: 50%;
   }
+}
+
+/* End of Game*/
+
+#gameOver-wrapper, #gameWon-wrapper  {
+  display: none;
+  border: solid 3px #2b1706;
+  background-color: rgba(70, 39, 11, 0.8);
+  color:#D1C8A6;
+  font-size: 30px;
+  text-align: center;
+  width: 400px;
+  border-radius: 10px;
+  margin: 20px 0px;
 }

@@ -7,6 +7,8 @@ function init() {
   const livesText = document.querySelector('.livesText')
   const dotsText = document.querySelector('.dotsText')
   const playButton = document.querySelector('.play-button')
+  const playAgainButton = document.querySelector('.playAgain-button')
+
 
   console.log(playButton)
 
@@ -308,17 +310,19 @@ function init() {
         }, 800)
       }, 2400)
 
+      setTimeout(() => { 
+        monstersMoveChase(monsters, [3]) 
+      }, 3200)
     }
-    
-    setTimeout(() => { 
-      monstersMoveChase(monsters, [3]) 
-    }, 3200)
+    // setTimeout(() => { 
+    //   monstersMoveChase(monsters, [3]) 
+    // }, 3200)
   }
     
 
   // ! Monster Move (Mode) Execution 
 
-  const monsterNextMove = [-1, +1, -width, + width]
+  const monsterNextMove = [-1, +1, -width, +width]
 
   // ? MonsterMovement 
 
@@ -373,7 +377,8 @@ function init() {
         monsterReset(monsterIndex)
         console.log('monster reset')
       } else {
-        livesText.innerHTML = lives -= 1
+        lives -= 1
+        livesText.innerHTML = lives 
         checkGameOver()
       }
     }
@@ -400,18 +405,29 @@ function init() {
   function checkGameOver() {
     if (lives === 0) {
       console.log('Game over')
-      // pause game 
-      // make div appear with final score and "Play Again" button
+      document.getElementById('progress-container').style.display = 'none'
+      document.getElementById('gameOver-wrapper').style.display = 'block'
+      document.querySelector('.grid').style.display = 'none'
       // add event listener to play again button. 
     }
   }
 
-  // ! Game Wom
+  // ! Game Won
 
   function gameWon() {
-    console.log('game won!')
-    // make div appear with final score and "play again" button
+    if (dots === 0) {
+      console.log('You Win!')
+      document.getElementById('progress-container').style.display = 'none'
+      document.getElementById('gameWon-wrapper').style.display = 'block'
+      document.querySelector('.grid').style.display = 'none'
     //add event listener to the play again button
+    }
+  }
+
+  // ! Game Reset 
+
+  function gameReset(){
+    location.reload()
   }
 
 
@@ -423,9 +439,10 @@ function init() {
       e.preventDefault()
     }
   }, false)
+
   window.addEventListener('keydown', heroMove)
   playButton.addEventListener('click', () => monstersMove(true))
-
+  playAgainButton.addEventListener('click', gameReset)
 }
 
 window.addEventListener('DOMContentLoaded', init)
