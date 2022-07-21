@@ -44,10 +44,10 @@ function init() {
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 0, 433, 200),
-    new Monster('Monster2', 1, 434, 250),
-    new Monster('Monster3', 2, 432, 300),
-    new Monster('Monster4', 3, 435, 350)
+    new Monster('Monster1', 0, 433, 250),
+    new Monster('Monster2', 1, 434, 300),
+    new Monster('Monster3', 2, 432, 350),
+    new Monster('Monster4', 3, 435, 400)
     // new Monster('MonsterTEST', 4, 659)
   ]
 
@@ -59,7 +59,7 @@ function init() {
   // Score - Dots - Lives
   
   let score = 0
-  let lives = 3
+  let lives = 10
   let dots = 295
   dotsText.innerHTML = dots
 
@@ -175,13 +175,15 @@ function init() {
 
   function checkCollision(monsterPosition, monsterIndex, heroPosition) {
     if (cells[heroPosition].classList.contains('monster') 
-    || cells[monsterPosition].classList.contains('hero')) {
+    || cells[monsterPosition].classList.contains('hero')
+    ) {
       if (frightenedMode) {
         score += frightenedMonsterValue
         scoreText.innerHTML = score
         monsterReset(monsterIndex)
       } else {
         lives -= 1
+        console.log(lives)
         livesText.innerHTML = lives 
         checkGameOver()
       }
@@ -277,116 +279,129 @@ function init() {
 
         monstersMoveChase(monsters, [1]) 
 
-        cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-        cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
-        monsters[2].currentPosition += 1
-        cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-        cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
+        // cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+        // cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+        // monsters[2].currentPosition += 1
+        // cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+        // cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-        setTimeout(() => {
+        // setTimeout(() => {
           
-          const monster3Leaves = setInterval(() => {
+        //   const monster3Leaves = setInterval(() => {
 
-            cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-            cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
-            monsters[2].currentPosition -= width
-            cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-            cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
+        //     cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+        //     cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+        //     monsters[2].currentPosition -= width
+        //     cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+        //     cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-          }, 200)
+        //   }, 200)
 
-          setTimeout(() => {
-            clearInterval(monster3Leaves)
-          }, 800)
+        //   setTimeout(() => {
+        //     clearInterval(monster3Leaves)
+        //   }, 800)
 
-        }, 200)
+        // }, 200)
 
       }, 1600)
     
     }
 
-    if (all || monsterIndex === 3) {
+    // if (all || monsterIndex === 3) {
 
-      setTimeout(() => {
+    //   setTimeout(() => {
 
-        monstersMoveChase(monsters, [2]) 
+    //     monstersMoveChase(monsters, [2]) 
 
-        cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-        cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
-        monsters[3].currentPosition -= 1
-        cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-        cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+    //     cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+    //     cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+    //     monsters[3].currentPosition -= 1
+    //     cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+    //     cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
 
-        setTimeout(() => {
+    //     setTimeout(() => {
           
-          const monster4Leaves = setInterval(() => {
+    //       const monster4Leaves = setInterval(() => {
 
-            cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-            cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
-            monsters[3].currentPosition -= width
-            cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-            cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+    //         cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+    //         cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+    //         monsters[3].currentPosition -= width
+    //         cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+    //         cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
-          }, 200)
+    //       }, 200)
 
-          setTimeout(() => {
-            clearInterval(monster4Leaves)
-          }, 800)
+    //       setTimeout(() => {
+    //         clearInterval(monster4Leaves)
+    //       }, 800)
 
-        }, 200)
+    //     }, 200)
 
-      }, 2400)
+    //   }, 2400)
 
-      setTimeout(() => { 
-        monstersMoveChase(monsters, [3]) 
-      }, 3200)
-    }
+    //   setTimeout(() => { 
+    //     monstersMoveChase(monsters, [3]) 
+    //   }, 3200)
+    // }
 
   }
     
-
   // ? MOVE MONSTERS RANDOMLY 
 
-  const monsterNextMove = [-1, +1, -width, +width]
+  const monsterNextMove = [-1, 1, -width, width]
 
   function monstersMoveChase(monsters,[index]){
-    console.log(monsters[index].speed)
+
     let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
+
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
+    
     setInterval(function() {
       cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster')
       cells[monsters[index].currentPosition].removeAttribute('data-monster-index')
 
       // If current position is in the home 
       if (cells[monsters[index].currentPosition] === 432) {
+        if (!index) console.log('432')
         monsters[index].currentPosition += 1
 
+
       } else if (cells[monsters[index].currentPosition] === 435) {
+        if (!index) console.log('435')
         monsters[index].currentPosition -= 1
 
       } else if (cells[monsters[index].currentPosition] === 433 || cells[monsters[index].currentPosition] === 434 || cells[monsters[index].currentPosition] === 405 || cells[monsters[index].currentPosition] === 406 || cells[monsters[index].currentPosition] === 377 || cells[monsters[index].currentPosition] === 378 || cells[monsters[index].currentPosition] === 349 || cells[monsters[index].currentPosition] === 350) {
+        if (!index) console.log('leaving pen')
         monsters[index].currentPosition -= width
 
       // If next move is through the tunnel 
-      } else 
-      if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === +1) {
+      } else if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === 1) {
+        if (!index) console.log('319')
         monsters[index].currentPosition = 392
+       
       } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
+        if (!index) console.log('392')
+
         monsters[index].currentPosition = 319
 
       // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
       } else if (!cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+        if (!index) console.log('no maze no monsterhome')
+        if (!index) console.log('monster current position ->', monsters[index].currentPosition)
+
         monsters[index].currentPosition += monsterRandomMove
       
       // If none of the above are viable, choose a different direction
       } else {
+        if (!index) console.log('cell doesnt contain maze->', !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze'))
+        if (!index) console.log('cell doesnt contain monsterhome->', !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome'))
+        if (!index) console.log(cells[monsters[index].currentPosition + monsterRandomMove])
+
         monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
       }
       cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster')
       cells[monsters[index].currentPosition].dataset.monsterIndex = monsters[index].monsterIndex
-
-      // checkHeroCollision(monsters[index].currentPosition, monsters[index].monsterIndex)
 
       checkCollision(monsters[index].currentPosition, monsters[index].monsterIndex,heroCurrentPosition)
 
