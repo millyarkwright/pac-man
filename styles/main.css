@@ -11,6 +11,9 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
 }
 
@@ -19,6 +22,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
 }
 
 /* Intro & Instructions CSS */
@@ -69,10 +73,16 @@ button {
   cursor: pointer;
 }
 
-article {
+#intro-wrapper article {
   font-size: 16px;
-  margin: 0px 18px 85px 35px; 
+  margin: 0px 18px 85px 35px;
+  cursor: pointer; 
 }
+
+#intro-wrapper article:hover {
+  text-decoration: underline;
+}
+
 
 /* Game Wrapper (Lives & Score + Grid) CSS */
 
@@ -189,4 +199,58 @@ div.monster {
 
 /* Myth Article */
 
+#myth-wrapper {
+  display: none;
+  border: solid 4px #2c3438;
+  border-radius: 10px;
+  background-color: rgba(107, 170, 212, 0.99);
 
+  color:#2c3438; 
+  position: absolute;
+  z-index: 10;
+  max-width: 985px;
+  height: 400px;
+  padding: 0 15px;
+
+}
+
+
+
+#storyHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+#storyHeader h3 {
+  text-align: center;
+  font-size: 25px;
+  width: 100%;
+}
+
+.storyText {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
+}
+
+
+.closeButton {
+  border: solid 2px rgba(44, 52, 56, 0.7);
+  border-radius: 1px;
+  /* padding: 15px; */
+  margin: 10px 0;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+}
+
+.closeButton p {
+  text-align: center;
+  color: rgba(44, 52, 56, 0.9);
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 20px;
+}

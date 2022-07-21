@@ -8,7 +8,11 @@ function init() {
   const dotsText = document.querySelector('.dotsText')
   const playButton = document.querySelector('.play-button')
   const playAgainButton = document.querySelectorAll('.playAgain-button')
+  const readMore = document.querySelector('.read-more')
+  const closeButton = document.querySelector('.closeButton')
 
+  console.log(readMore)
+  console.log(closeButton)
   // ! Variables
 
   // Grid Variables
@@ -39,6 +43,7 @@ function init() {
       this.startPosition = startPosition
       this.speed = speed
       this.currentPosition = startPosition
+      this.timer = null
     }
   }
 
@@ -55,6 +60,10 @@ function init() {
   // Frightened Mode Variable 
 
   let frightenedMode = false
+
+  // Can lose life Variables
+
+  let canLoseLife = true
 
   // Score - Dots - Lives
   
@@ -170,6 +179,8 @@ function init() {
     collectDots(heroCurrentPosition) 
     collectEnergiser(heroCurrentPosition)
   }
+   
+  // ! ------ COLLISION & COLLECTION -------
 
   //  ? CHECK COLLISION
 
@@ -182,10 +193,16 @@ function init() {
         scoreText.innerHTML = score
         monsterReset(monsterIndex)
       } else {
-        lives -= 1
-        console.log(lives)
-        livesText.innerHTML = lives 
-        checkGameOver()
+        if (canLoseLife) {
+          lives -= 1
+          console.log(lives)
+          livesText.innerHTML = lives 
+          checkGameOver()
+          canLoseLife = false
+          setTimeout(() => {
+            canLoseLife = true
+          }, 400)
+        }
       }
     }
   }
@@ -254,7 +271,7 @@ function init() {
 
       setTimeout(() => {
 
-        monstersMoveChase(monsters, [0])
+        monstersMoveChase(0)
 
         const monster2Leaves = setInterval(() => {
 
@@ -277,73 +294,73 @@ function init() {
 
       setTimeout(() => {
 
-        monstersMoveChase(monsters, [1]) 
+        monstersMoveChase(1) 
 
-        // cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-        // cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
-        // monsters[2].currentPosition += 1
-        // cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-        // cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
+        cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+        cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+        monsters[2].currentPosition += 1
+        cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+        cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-        // setTimeout(() => {
+        setTimeout(() => {
           
-        //   const monster3Leaves = setInterval(() => {
+          const monster3Leaves = setInterval(() => {
 
-        //     cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-        //     cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
-        //     monsters[2].currentPosition -= width
-        //     cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-        //     cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
+            cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+            cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+            monsters[2].currentPosition -= width
+            cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+            cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-        //   }, 200)
+          }, 200)
 
-        //   setTimeout(() => {
-        //     clearInterval(monster3Leaves)
-        //   }, 800)
+          setTimeout(() => {
+            clearInterval(monster3Leaves)
+          }, 800)
 
-        // }, 200)
+        }, 200)
 
       }, 1600)
     
     }
 
-    // if (all || monsterIndex === 3) {
+    if (all || monsterIndex === 3) {
 
-    //   setTimeout(() => {
+      setTimeout(() => {
 
-    //     monstersMoveChase(monsters, [2]) 
+        monstersMoveChase(2) 
 
-    //     cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-    //     cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
-    //     monsters[3].currentPosition -= 1
-    //     cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-    //     cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+        cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+        cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+        monsters[3].currentPosition -= 1
+        cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+        cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
 
-    //     setTimeout(() => {
+        setTimeout(() => {
           
-    //       const monster4Leaves = setInterval(() => {
+          const monster4Leaves = setInterval(() => {
 
-    //         cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-    //         cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
-    //         monsters[3].currentPosition -= width
-    //         cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-    //         cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+            cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+            cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+            monsters[3].currentPosition -= width
+            cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+            cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
-    //       }, 200)
+          }, 200)
 
-    //       setTimeout(() => {
-    //         clearInterval(monster4Leaves)
-    //       }, 800)
+          setTimeout(() => {
+            clearInterval(monster4Leaves)
+          }, 800)
 
-    //     }, 200)
+        }, 200)
 
-    //   }, 2400)
+      }, 2400)
 
-    //   setTimeout(() => { 
-    //     monstersMoveChase(monsters, [3]) 
-    //   }, 3200)
-    // }
+      setTimeout(() => { 
+        monstersMoveChase(3) 
+      }, 3200)
+    }
 
   }
     
@@ -351,13 +368,13 @@ function init() {
 
   const monsterNextMove = [-1, 1, -width, width]
 
-  function monstersMoveChase(monsters,[index]){
+  function monstersMoveChase(index){
 
     let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
 
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
     
-    setInterval(function() {
+    monsters[index].timer = setInterval(function() {
       cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster')
       cells[monsters[index].currentPosition].removeAttribute('data-monster-index')
 
@@ -379,7 +396,7 @@ function init() {
       } else if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === 1) {
         if (!index) console.log('319')
         monsters[index].currentPosition = 392
-       
+
       } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
         if (!index) console.log('392')
 
@@ -413,6 +430,8 @@ function init() {
 
   function monsterReset(monsterIndex) {
     console.log(monsterIndex)
+
+    clearInterval(monsters[monsterIndex].timer)
 
     cells[monsters[monsterIndex].currentPosition].classList.remove(monsters[monsterIndex].name, 'monster')
     cells[monsters[monsterIndex].currentPosition].removeAttribute('data-monster-index')
@@ -456,19 +475,34 @@ function init() {
     location.reload()
   }
 
+  // Close Myth Article
+
 
   // ! Events
 
+  // Stop page moving around when using the arrow functions
   window.addEventListener('keydown', function(e) {
     if ([32, 37, 38, 39, 40].indexOf(e) > -1) {
       e.preventDefault()
     }
   }, false)
 
+  // Listen for keys pressed to move hero
   window.addEventListener('keydown', heroMove)
+
+  // Listen for a click on the play button to start moving monsters
+
   playButton.addEventListener('click', () => monstersMove(true))
+  
+  // Listen for click on the Play Again buttons
   playAgainButton.forEach(button => button.addEventListener('click', gameReset))
 
+  // Listeners for the story (myth) - Open & Close
+
+  readMore.addEventListener('click', () => document.querySelector('#myth-wrapper').style.display = 'block')
+
+  closeButton.addEventListener('click', () => document.querySelector('#myth-wrapper').style.display = 'none')
+  
 }
 
 window.addEventListener('DOMContentLoaded', init)
