@@ -7,10 +7,7 @@ function init() {
   const livesText = document.querySelector('.livesText')
   const dotsText = document.querySelector('.dotsText')
   const playButton = document.querySelector('.play-button')
-  const playAgainButton = document.querySelector('.playAgain-button')
-
-
-  console.log(playButton)
+  const playAgainButton = document.querySelectorAll('.playAgain-button')
 
   // ! Variables
 
@@ -36,28 +33,24 @@ function init() {
   // ! Class & Objects for Monsters 
 
   class Monster {
-    constructor(name, monsterIndex, startPosition, speed, nature, targetCell) {
+    constructor(name, monsterIndex, startPosition, speed) {
       this.name = name
       this.monsterIndex = monsterIndex
       this.startPosition = startPosition
       this.speed = speed
-      // this.nature = nature
-      // this.targetCell = targetCell
-      // would like to make the tagetCell randomly generated for each monster (would need to be in each corner though - stretch goal perhaps)
       this.currentPosition = startPosition
     }
   }
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 0, 433, 400, 'chaser', 90),
-    new Monster('Monster2', 1, 434, 600, 'ambush', 246),
-    new Monster('Monster3', 2, 432, 800, 'all', 734),
-    new Monster('Monster4', 3, 435, 1000, 'random', 661)
+    new Monster('Monster1', 0, 433, 400),
+    new Monster('Monster2', 1, 434, 600),
+    new Monster('Monster3', 2, 432, 800),
+    new Monster('Monster4', 3, 435, 1000)
+    // new Monster('MonsterTEST', 4, 659)
   ]
 
-  console.log(monsters)
-  console.log(monsters[1])
 
   // Frightened Mode Variable 
 
@@ -128,17 +121,6 @@ function init() {
     
   // ? Hero Movement
 
-  // Function for adding & removing Hero from cells
-  function removeHero(position) {
-    cells[position].classList.remove('hero')
-  }
-
-  function addHero(position) {
-    cells[position].classList.add('hero')
-  }
-
-  // Function for moving the hero around the board: 
-
   function heroMove(event) {
   // Save keys for each direction
     const keyCode = event.keyCode
@@ -148,7 +130,7 @@ function init() {
     const down = 40
 
     // First remove hero from current position
-    removeHero(heroCurrentPosition)
+    cells[heroCurrentPosition].classList.remove('hero')
 
     // If statement (check whether the index we want to the hero to move isn't a wall, energy home and doesn't leave the grid/jumps down a line):
     if (left === keyCode && !cells[heroCurrentPosition - 1].classList.contains('monsterHome') && !cells[heroCurrentPosition - 1].classList.contains('maze') && heroCurrentPosition % width !== 0) {
@@ -165,15 +147,35 @@ function init() {
       heroCurrentPosition += width
     }
 
-    // Call functions: if dot is collected or if energiser is eaten
     // Add the hero to the new position
-    addHero(heroCurrentPosition)
+    cells[heroCurrentPosition].classList.add('hero')
+
+    // Save monsterIndex & monsterPosition to use in checkCollision function
+    let monsterIndex = 0
+    let monsterPosition = 0
+
+    if (cells[heroCurrentPosition].classList.contains('monster')) {
+      monsterIndex = parseFloat(cells[heroCurrentPosition].getAttribute('data-monster-index'))
+      monsterPosition = parseFloat(cells[heroCurrentPosition].getAttribute('data-cell'))
+    }
+
+    // console.log(monsterIndex)
+    // console.log(monsterPosition)
+
+    // Call checkCollision function
+
+    // checkMonsterCollision(heroCurrentPosition)
+
+    checkCollision(monsterPosition, monsterIndex, heroCurrentPosition)
+    
+    // Call functions: if dot is collected or if energiser is eaten
+
     collectDots(heroCurrentPosition) 
     collectEnergiser(heroCurrentPosition)
     // heroMeetsMonster(heroCurrentPosition)
   }
 
-  // Function for collecting dost
+  // Function for collecting dots
   function collectDots(position) {
     if (cells[position].classList.contains('dots')) {
       scoreText.innerHTML = score += dotValue
@@ -203,13 +205,6 @@ function init() {
       cells[position].classList.remove('energiser')
     }
   }
-
-  // Scared monster movement function 
-
-  // remove class list frightened
-  // move to new cell 
-  // add class list frightened
-
 
  
   // ! Execution: Monster Movement 
@@ -361,21 +356,21 @@ function init() {
       cells[monsters[index].currentPosition].classList.add(monsters[index].name, 'monster')
       cells[monsters[index].currentPosition].dataset.monsterIndex = monsters[index].monsterIndex
 
-      checkCollision(monsters[index].currentPosition, monsters[index].monsterIndex, heroCurrentPosition)
-      
+      // checkHeroCollision(monsters[index].currentPosition, monsters[index].monsterIndex)
+
+      checkCollision(monsters[index].currentPosition, monsters[index].monsterIndex,heroCurrentPosition)
+
     }, monsters[index].speed)
   }
   
-
-  // ? FUNCTION FOR CHECKING FOR COLLISION
+  
+  //  Combine checkCollision Function 
 
   function checkCollision(monsterPosition, monsterIndex, heroPosition) {
-    if (cells[monsterPosition].classList.contains('hero') || cells[heroPosition].classList.contains('monster')) {
-      console.log('collision')
-      console.log('monsterindex-->', monsterIndex)
+    if (cells[heroPosition].classList.contains('monster') 
+    || cells[monsterPosition].classList.contains('hero')) {
       if (frightenedMode) {
         monsterReset(monsterIndex)
-        console.log('monster reset')
       } else {
         lives -= 1
         livesText.innerHTML = lives 
@@ -383,6 +378,7 @@ function init() {
       }
     }
   }
+
 
   // ? Monster Reset (Gets sent home)
 
@@ -442,7 +438,8 @@ function init() {
 
   window.addEventListener('keydown', heroMove)
   playButton.addEventListener('click', () => monstersMove(true))
-  playAgainButton.addEventListener('click', gameReset)
+  playAgainButton.forEach(button => button.addEventListener('click', gameReset))
+
 }
 
 window.addEventListener('DOMContentLoaded', init)
@@ -463,6 +460,9 @@ window.addEventListener('DOMContentLoaded', init)
   // Monster 3 = does a mix of the three others... 
   // Monster 4 = when leaving the home, head to hero, but once clse, turn direections to head back to "scatter" phase 
 
+        // this.nature = nature
+      // this.targetCell = targetCell
+      // would like to make the tagetCell randomly generated for each monster (would need to be in each corner though - stretch goal perhaps)
 
   // ! Function for collecting energisers (alternative)
 
@@ -490,6 +490,24 @@ window.addEventListener('DOMContentLoaded', init)
 //   }
 // }
 
+  // Function for checking collision with Monster
+
+  // function checkMonsterCollision(heroPosition) {
+  //   if (cells[heroPosition].classList.contains('monster')) {
+  //     console.log('hero collision with monster')
+  //     // console.log(cells[heroPosition].getAttribute('data-monster-index'))
+  //     const monsterIndex = cells[heroPosition].getAttribute('data-monster-index')
+  //     // console.log(monsterIndex)
+  //     if (frightenedMode) {
+  //       monsterReset(monsterIndex)
+  //       // console.log('monster reset')
+  //     } else {
+  //       lives -= 1
+  //       livesText.innerHTML = lives 
+  //       checkGameOver()
+  //     }
+  //   }
+  // }
 
 
   // ! Execution: Monster Movement 
@@ -712,7 +730,6 @@ window.addEventListener('DOMContentLoaded', init)
     // let monster4CurrentPosition = monster4StartingPosition
 
 
-
   // ? One overarching function for monsterMove: 
   // if chase mode = true (others should be false) then call chasemode function. if scatter mode = true (others should be false) then call scatter mode function. etc 
 
@@ -811,6 +828,44 @@ window.addEventListener('DOMContentLoaded', init)
 
 
   // Then we need to check the cell the monster is about to look into - currentposition + direction? - if that cell doesn't contain a wall, enemy home and doesn't leave the board completely, reassign current positions. If that new current position contains the hero, if the ghost isn't frightened (frightenedMode = fale) then call monster function above, if frightened (frightenedMode = true) then call fightened monster function above? 
+
+
+
+  // ? OLD Function for checking Collision With Hero 
+
+  // function checkHeroCollision(monsterPosition, monsterIndex) {
+  //   if (cells[monsterPosition].classList.contains('hero')) {
+  //     console.log('collision')
+  //     console.log('monsterindex-->', monsterIndex)
+  //     if (frightenedMode) {
+  //       monsterReset(monsterIndex)
+  //       console.log('monster reset')
+  //     } else {
+  //       lives -= 1
+  //       livesText.innerHTML = lives 
+  //       checkGameOver()
+  //     }
+  //   }
+  // }
+
+  // ? OLD Function for checking collision with Monster
+
+  // function checkMonsterCollision(heroPosition) {
+  //   if (cells[heroPosition].classList.contains('monster')) {
+  //     console.log('hero collision with monster')
+  //     // console.log(cells[heroPosition].getAttribute('data-monster-index'))
+  //     const monsterIndex = cells[heroPosition].getAttribute('data-monster-index')
+  //     // console.log(monsterIndex)
+  //     if (frightenedMode) {
+  //       monsterReset(monsterIndex)
+  //       // console.log('monster reset')
+  //     } else {
+  //       lives -= 1
+  //       livesText.innerHTML = lives 
+  //       checkGameOver()
+  //     }
+  //   }
+  // }
 
 
   // OLD CODE FOR IF HERO MET MONSTER
