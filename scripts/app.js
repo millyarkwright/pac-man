@@ -44,10 +44,10 @@ function init() {
 
   // Monster status & nature
   const monsters = [
-    new Monster('Monster1', 0, 433, 400),
-    new Monster('Monster2', 1, 434, 600),
-    new Monster('Monster3', 2, 432, 800),
-    new Monster('Monster4', 3, 435, 1000)
+    new Monster('Monster1', 0, 433, 200),
+    new Monster('Monster2', 1, 434, 250),
+    new Monster('Monster3', 2, 432, 300),
+    new Monster('Monster4', 3, 435, 350)
     // new Monster('MonsterTEST', 4, 659)
   ]
 
@@ -177,6 +177,8 @@ function init() {
     if (cells[heroPosition].classList.contains('monster') 
     || cells[monsterPosition].classList.contains('hero')) {
       if (frightenedMode) {
+        score += frightenedMonsterValue
+        scoreText.innerHTML = score
         monsterReset(monsterIndex)
       } else {
         lives -= 1
@@ -224,18 +226,21 @@ function init() {
   
   function monstersMove(all, monsterIndex) {
     
-    // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
+    // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds (200 milliseconds). All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (800 milliseconds (0.2 * 4)). 
+    // After each monster has come out, the chase function for each should kick in (this is actually random movement for now, aim is to write a function that will have monsters chase hero)
+    // For Monster 3 & 4, adding in an extra timeout of 0.2 seconds (200 milliseconds) to delay the moving up funciton as they need to move right and left (respective) to get into position to move up. As mentioned above, each move happens every 0.2 seconds. 
     // Want to stagger each monster leaving - Monster2 will have to wait 8 secs before moving, MOnster 3 16 secs and Monster 4 24 secs
 
     if (all || monsterIndex === 0) {
+
       const monster1Leaves = setInterval(() => {
+
         cells[monsters[0].currentPosition].classList.remove(monsters[0].name, 'monster')
         cells[monsters[0].currentPosition].removeAttribute('data-monster-index')
-  
         monsters[0].currentPosition -= width
-  
         cells[monsters[0].currentPosition].classList.add(monsters[0].name, 'monster')
         cells[monsters[0].currentPosition].dataset.monsterIndex = monsters[0].monsterIndex
+
       }, 200)
       
       setTimeout(() => {
@@ -244,81 +249,100 @@ function init() {
     }
 
     if (all || monsterIndex === 1) {
+
       setTimeout(() => {
+
         monstersMoveChase(monsters, [0])
+
         const monster2Leaves = setInterval(() => {
+
           cells[monsters[1].currentPosition].classList.remove(monsters[1].name, 'monster')
           cells[monsters[1].currentPosition].removeAttribute('data-monster-index')
-
           monsters[1].currentPosition -= width
-
           cells[monsters[1].currentPosition].classList.add(monsters[1].name, 'monster')
           cells[monsters[1].currentPosition].dataset.monsterIndex = monsters[1].monsterIndex
+
         }, 200)
+
         setTimeout(() => {
           clearInterval(monster2Leaves)
         }, 800)
+
       }, 800)
     }
 
     if (all || monsterIndex === 2) {
+
       setTimeout(() => {
+
         monstersMoveChase(monsters, [1]) 
+
         cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
         cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
-
         monsters[2].currentPosition += 1
-
         cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
         cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-        const monster3Leaves = setInterval(() => {
-          cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
-          cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+        setTimeout(() => {
+          
+          const monster3Leaves = setInterval(() => {
 
-          monsters[2].currentPosition -= width
+            cells[monsters[2].currentPosition].classList.remove(monsters[2].name, 'monster')
+            cells[monsters[2].currentPosition].removeAttribute('data-monster-index')
+            monsters[2].currentPosition -= width
+            cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
+            cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
 
-          cells[monsters[2].currentPosition].classList.add(monsters[2].name, 'monster')
-          cells[monsters[2].currentPosition].dataset.monsterIndex = monsters[2].monsterIndex
+          }, 200)
+
+          setTimeout(() => {
+            clearInterval(monster3Leaves)
+          }, 800)
+
         }, 200)
 
-        setTimeout(() => {
-          clearInterval(monster3Leaves)
-        }, 800)
       }, 1600)
+    
     }
 
     if (all || monsterIndex === 3) {
+
       setTimeout(() => {
+
         monstersMoveChase(monsters, [2]) 
+
         cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
         cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
-
         monsters[3].currentPosition -= 1
-
         cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
         cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
 
-        const monster4Leaves = setInterval(() => {
-          cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
-          cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+        setTimeout(() => {
+          
+          const monster4Leaves = setInterval(() => {
 
-          monsters[3].currentPosition -= width
+            cells[monsters[3].currentPosition].classList.remove(monsters[3].name, 'monster')
+            cells[monsters[3].currentPosition].removeAttribute('data-monster-index')
+            monsters[3].currentPosition -= width
+            cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
+            cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
 
-          cells[monsters[3].currentPosition].classList.add(monsters[3].name, 'monster')
-          cells[monsters[3].currentPosition].dataset.monsterIndex = monsters[3].monsterIndex
+          }, 200)
+
+          setTimeout(() => {
+            clearInterval(monster4Leaves)
+          }, 800)
+
         }, 200)
 
-        setTimeout(() => {
-          clearInterval(monster4Leaves)
-        }, 800)
       }, 2400)
 
       setTimeout(() => { 
         monstersMoveChase(monsters, [3]) 
       }, 3200)
     }
+
   }
     
 
@@ -327,6 +351,7 @@ function init() {
   const monsterNextMove = [-1, +1, -width, +width]
 
   function monstersMoveChase(monsters,[index]){
+    console.log(monsters[index].speed)
     let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
     setInterval(function() {
