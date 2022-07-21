@@ -117,9 +117,11 @@ function init() {
   })
   
 
-  // ! Executions
+  // ! ---------------------------------------------- Executions ---------------------------------------------
     
-  // ? Hero Movement
+  // ! Executions: Hero Movement
+  
+  // ? HERO MOVEMENT
 
   function heroMove(event) {
   // Save keys for each direction
@@ -159,12 +161,7 @@ function init() {
       monsterPosition = parseFloat(cells[heroCurrentPosition].getAttribute('data-cell'))
     }
 
-    // console.log(monsterIndex)
-    // console.log(monsterPosition)
-
     // Call checkCollision function
-
-    // checkMonsterCollision(heroCurrentPosition)
 
     checkCollision(monsterPosition, monsterIndex, heroCurrentPosition)
     
@@ -172,10 +169,25 @@ function init() {
 
     collectDots(heroCurrentPosition) 
     collectEnergiser(heroCurrentPosition)
-    // heroMeetsMonster(heroCurrentPosition)
   }
 
-  // Function for collecting dots
+  //  ? CHECK COLLISION
+
+  function checkCollision(monsterPosition, monsterIndex, heroPosition) {
+    if (cells[heroPosition].classList.contains('monster') 
+    || cells[monsterPosition].classList.contains('hero')) {
+      if (frightenedMode) {
+        monsterReset(monsterIndex)
+      } else {
+        lives -= 1
+        livesText.innerHTML = lives 
+        checkGameOver()
+      }
+    }
+  }
+  
+  //  ? COLLECT DOTS
+
   function collectDots(position) {
     if (cells[position].classList.contains('dots')) {
       scoreText.innerHTML = score += dotValue
@@ -187,7 +199,7 @@ function init() {
     }
   }
 
-  // Function for collecting energisers
+  // ? COLLECT ENERGISERS
 
   function collectEnergiser(position) {
     if (cells[position].classList.contains('energiser')) {
@@ -206,12 +218,10 @@ function init() {
     }
   }
 
- 
   // ! Execution: Monster Movement 
 
-  // ? GET MONSTERS OUT OF HOME 
+  // ? GET MONSTERS OUT OF HOME (& THEN MOVE)
   
-
   function monstersMove(all, monsterIndex) {
     
     // Idea: each monster leaves the home in turn, each monster moves up (a width) every 0.2 seconds. All will need to move up 4 cells to get out so timeout should be after 0.8 seconds (0.2 * 4). After each monster has come out, the chase function for each should kick in (yet to be written, practice with random (frightened function)).
@@ -309,17 +319,12 @@ function init() {
         monstersMoveChase(monsters, [3]) 
       }, 3200)
     }
-    // setTimeout(() => { 
-    //   monstersMoveChase(monsters, [3]) 
-    // }, 3200)
   }
     
 
-  // ! Monster Move (Mode) Execution 
+  // ? MOVE MONSTERS RANDOMLY 
 
   const monsterNextMove = [-1, +1, -width, +width]
-
-  // ? MonsterMovement 
 
   function monstersMoveChase(monsters,[index]){
     let monsterRandomMove = monsterNextMove[Math.floor(Math.random() * monsterNextMove.length)]
@@ -363,24 +368,8 @@ function init() {
     }, monsters[index].speed)
   }
   
-  
-  //  Combine checkCollision Function 
 
-  function checkCollision(monsterPosition, monsterIndex, heroPosition) {
-    if (cells[heroPosition].classList.contains('monster') 
-    || cells[monsterPosition].classList.contains('hero')) {
-      if (frightenedMode) {
-        monsterReset(monsterIndex)
-      } else {
-        lives -= 1
-        livesText.innerHTML = lives 
-        checkGameOver()
-      }
-    }
-  }
-
-
-  // ? Monster Reset (Gets sent home)
+  // ? MONSTER RESET
 
   function monsterReset(monsterIndex) {
     console.log(monsterIndex)
@@ -396,7 +385,9 @@ function init() {
     monstersMove(false, monsterIndex)
   }
 
-  // ! Game Over 
+  // ! Execution: End of Game 
+
+  // ? GAME OVER
 
   function checkGameOver() {
     if (lives === 0) {
@@ -408,7 +399,7 @@ function init() {
     }
   }
 
-  // ! Game Won
+  // ? GAME WON
 
   function gameWon() {
     if (dots === 0) {
@@ -416,11 +407,10 @@ function init() {
       document.getElementById('progress-container').style.display = 'none'
       document.getElementById('gameWon-wrapper').style.display = 'block'
       document.querySelector('.grid').style.display = 'none'
-    //add event listener to the play again button
     }
   }
 
-  // ! Game Reset 
+  // ? GAME RESET
 
   function gameReset(){
     location.reload()
@@ -429,9 +419,8 @@ function init() {
 
   // ! Events
 
-  // Add event listener for user pressing arrow keys to move hero
   window.addEventListener('keydown', function(e) {
-    if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    if ([32, 37, 38, 39, 40].indexOf(e) > -1) {
       e.preventDefault()
     }
   }, false)
@@ -446,7 +435,7 @@ window.addEventListener('DOMContentLoaded', init)
 
 
 
-// ----------------------------------------------------
+// --------------------------OLD CODE--------------------------------
 
 // cells[monster1CurrentPosition].classList.add('monster1', 'monster')
 // cells[monster2CurrentPosition].classList.add('monster2', 'monster')
