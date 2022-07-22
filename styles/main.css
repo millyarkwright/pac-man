@@ -228,6 +228,7 @@ div.monster {
 }
 
 .storyText {
+  font-family: 'Oxygen', sans-serif;
   overflow-y: scroll;
   overflow-x: hidden;
   height: 300px;
