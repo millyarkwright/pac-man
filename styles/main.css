@@ -214,8 +214,6 @@ div.monster {
 
 }
 
-
-
 #storyHeader {
   display: flex;
   justify-content: space-between;
@@ -226,14 +224,6 @@ div.monster {
   font-size: 25px;
   width: 100%;
 }
-
-.storyText {
-  font-family: 'Oxygen', sans-serif;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 300px;
-}
-
 
 .closeButton {
   border: solid 2px rgba(44, 52, 56, 0.7);
@@ -255,3 +245,33 @@ div.monster {
   margin: 0;
   font-size: 20px;
 }
+
+.storyText {
+  font-family: 'Oxygen', sans-serif;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
+}
+
+.storyText p {
+  margin: 20px;
+}
+
+.storyText p:first-child {
+  margin-top: 0;
+}
+
+.storyText img:first-of-type {
+  float: right;
+  margin: 5px;
+  margin-right: 20px;
+  height: 200px;
+}
+
+.storyText img:last-of-type {
+  float: left;
+  margin: 5px;
+  margin-left: 20px;
+  height: 210px;
+}
+
