@@ -375,35 +375,37 @@ function init() {
     // Set Interval so this below occurs over and over again at the predetermined speed in the Monster Object: 
     
     monsters[index].timer = setInterval(function() {
+
       cells[monsters[index].currentPosition].classList.remove(monsters[index].name, 'monster')
       cells[monsters[index].currentPosition].removeAttribute('data-monster-index')
 
       // If current position is in the home 
-      if (cells[monsters[index].currentPosition] === 432) {
-        if (!index) console.log('432')
-        monsters[index].currentPosition += 1
+      // if (cells[monsters[index].currentPosition] === 432) {
+      //   if (!index) console.log('432')
+      //   monsters[index].currentPosition += 1
 
 
-      } else if (cells[monsters[index].currentPosition] === 435) {
-        if (!index) console.log('435')
-        monsters[index].currentPosition -= 1
+      // } else if (cells[monsters[index].currentPosition] === 435) {
+      //   if (!index) console.log('435')
+      //   monsters[index].currentPosition -= 1
 
-      } else if (cells[monsters[index].currentPosition] === 433 || cells[monsters[index].currentPosition] === 434 || cells[monsters[index].currentPosition] === 405 || cells[monsters[index].currentPosition] === 406 || cells[monsters[index].currentPosition] === 377 || cells[monsters[index].currentPosition] === 378 || cells[monsters[index].currentPosition] === 349 || cells[monsters[index].currentPosition] === 350) {
-        if (!index) console.log('leaving pen')
-        monsters[index].currentPosition -= width
+      // } else if (cells[monsters[index].currentPosition] === 433 || cells[monsters[index].currentPosition] === 434 || cells[monsters[index].currentPosition] === 405 || cells[monsters[index].currentPosition] === 406 || cells[monsters[index].currentPosition] === 377 || cells[monsters[index].currentPosition] === 378 || cells[monsters[index].currentPosition] === 349 || cells[monsters[index].currentPosition] === 350) {
+      //   if (!index) console.log('leaving pen')
+      //   monsters[index].currentPosition -= width
 
-      // If next move is through the tunnel 
-      } else if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === 1) {
-        if (!index) console.log('319')
-        monsters[index].currentPosition = 392
+      // // If next move is through the tunnel 
+      // } else if (cells[monsters[index].currentPosition === 319] && monsterRandomMove === 1) {
+      //   if (!index) console.log('319')
+      //   monsters[index].currentPosition = 392
 
-      } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
-        if (!index) console.log('392')
+      // } else if (cells[monsters[index].currentPosition === 392] && monsterRandomMove === -1) {
+      //   if (!index) console.log('392')
 
-        monsters[index].currentPosition = 319
+      //   monsters[index].currentPosition = 319
 
       // If next random move the monster wants to make is to a cell that doesn't contain maze or another monster
-      } else if (!cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome')) {
+      // } else 
+      if (!cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('maze') && !cells[monsters[index].currentPosition + monsterRandomMove].classList.contains('monsterHome')) {
         if (!index) console.log('no maze no monsterhome')
         if (!index) console.log('monster current position ->', monsters[index].currentPosition)
 
