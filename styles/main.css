@@ -197,6 +197,10 @@ div.monster {
   margin: 20px 0px;
 }
 
+.finalScore {
+  font-size: 25px;
+}
+
 /* Myth Article */
 
 #myth-wrapper {

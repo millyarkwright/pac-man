@@ -3,7 +3,7 @@ function init() {
   // ! Elements
 
   const grid = document.querySelector('.grid')
-  const scoreText = document.querySelector('.scoreText')
+  const scoreText = document.querySelectorAll('.scoreText')
   const livesText = document.querySelector('.livesText')
   const dotsText = document.querySelector('.dotsText')
   const playButton = document.querySelector('.play-button')
@@ -238,7 +238,9 @@ function init() {
 
   function collectDots(position) {
     if (cells[position].classList.contains('dots')) {
-      scoreText.innerHTML = score += dotValue
+      score += dotValue
+      scoreText.forEach(scoretext => scoretext.innerHTML = score)
+      // scoreText.innerHTML = score += dotValue
       dotsText.innerHTML = dots -= 1
       cells[position].classList.remove('dots')
     }
@@ -325,6 +327,7 @@ function init() {
       document.getElementById('progress-container').style.display = 'none'
       document.getElementById('gameOver-wrapper').style.display = 'block'
       document.querySelector('.grid').style.display = 'none'
+      scoreText.innerHTML = score
     }
   }
 
@@ -335,6 +338,7 @@ function init() {
       document.getElementById('progress-container').style.display = 'none'
       document.getElementById('gameWon-wrapper').style.display = 'block'
       document.querySelector('.grid').style.display = 'none'
+      scoreText.innerHTML = score
     }
   }
 
