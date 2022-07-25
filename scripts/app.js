@@ -218,7 +218,7 @@ function init() {
     ) {
       if (frightenedMode) {
         score += frightenedMonsterValue
-        scoreText.innerHTML = score
+        scoreText.forEach(scoretext => scoretext.innerHTML = score)
         monsterReset(monsterIndex)
       } else {
         if (canLoseLife) {
@@ -240,7 +240,6 @@ function init() {
     if (cells[position].classList.contains('dots')) {
       score += dotValue
       scoreText.forEach(scoretext => scoretext.innerHTML = score)
-      // scoreText.innerHTML = score += dotValue
       dotsText.innerHTML = dots -= 1
       cells[position].classList.remove('dots')
     }
@@ -253,7 +252,8 @@ function init() {
 
   function collectEnergiser(position) {
     if (cells[position].classList.contains('energiser')) {
-      scoreText.innerHTML = score += energiserValue
+      score += energiserValue
+      scoreText.forEach(scoretext => scoretext.innerHTML = score)
       frightenedMode = true
       document.body.classList.add('frightened')
 
