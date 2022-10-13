@@ -66,16 +66,22 @@ Once the project had been introduced and I'd chosen pac-man as my game, I spent 
 **Trello**
 * Created a Trello board, created lists for each day of the project and added the tasks I wanted to complete by each day to the lists. 
 * Listed out expected elements I would need to target: 
+
 ![Elements Checklist](./readme_images/elements_checklist.png)
 * Listed out expected variables I would need: 
-![Variables Checklist](./readme_images/variables_checklist.png)
   * Other Variables to be added throughout game: 
     * Point value of dots, energisers & frightened monsters
     * frightenedMode 
     * canLoseLife
+
+![Variables Checklist](./readme_images/variables_checklist.png)
+
 * Listed out expected executions:
+
 ![Executions Checklist](./readme_images/execution_checklist.png)
+
 * Listed out expected event listeners: 
+
 ![Events Checklist](./readme_images/event_checklist.png)
 
 **Excalidraw**
